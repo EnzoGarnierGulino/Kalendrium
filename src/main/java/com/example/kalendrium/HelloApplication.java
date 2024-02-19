@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HelloApplication extends Application {
     @Override
@@ -18,6 +19,11 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
+        IcsParser parser = new IcsParser();
+        List<Cours> listCoursShana = parser.parseICSFile("schedules/users/shana.ics");
+        List<Cours> listCoursEnzo = parser.parseICSFile("schedules/users/enzo.ics");
+        List<Cours> listCoursSabri = parser.parseICSFile("schedules/users/sabri.ics");
+        
         launch();
     }
 }
