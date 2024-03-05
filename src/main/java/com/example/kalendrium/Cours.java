@@ -1,11 +1,11 @@
 package com.example.kalendrium;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Cours {
     
-    private Date dateStart;
-    private Date dateEnd;
+    private Calendar dateStart;
+    private Calendar dateEnd;
     private String matiere;
     private String enseignant;
     private String td;
@@ -27,11 +27,11 @@ public class Cours {
         this.type = null;
     }
 
-    public Date getDateStart() {
+    public Calendar getDateStart() {
         return dateStart;
     }
 
-    public Date getDateEnd() {
+    public Calendar getDateEnd() {
         return dateEnd;
     }
 
@@ -67,11 +67,11 @@ public class Cours {
         return summary;
     }
 
-    public void setDateStart(Date dateStart) {
+    public void setDateStart(Calendar dateStart) {
         this.dateStart = dateStart;
     }
     
-    public void setDateEnd(Date dateEnd) {
+    public void setDateEnd(Calendar dateEnd) {
         this.dateEnd = dateEnd;
     }
     
