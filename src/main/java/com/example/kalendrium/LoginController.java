@@ -1,5 +1,6 @@
 package com.example.kalendrium;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -24,10 +26,29 @@ public class LoginController {
     @FXML
     protected ImageView logo;
 
+    @FXML
     public void initialize() {
         File file = new File("images/KalendriumLogo.png");
         Image image = new Image(file.toURI().toString());
         logo.setImage(image);
+        Platform.runLater(() -> {
+            usernameField.requestFocus();
+            usernameField.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.DOWN) {
+                    passwordField.requestFocus();
+                }
+            });
+            passwordField.setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.UP) {
+                    usernameField.requestFocus();
+                }
+            });
+            usernameField.getScene().setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.ENTER) {
+                    handleLogin();
+                }
+            });
+        });
     }
 
     @FXML
@@ -35,7 +56,6 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         boolean isAuthenticated = authenticate(username, password);
-
         if (isAuthenticated) {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();
