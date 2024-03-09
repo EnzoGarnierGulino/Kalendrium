@@ -5,6 +5,9 @@
 <?import javafx.scene.layout.*?>
 
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+
 <GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
           prefWidth="640.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.kalendrium.MainController">
@@ -27,13 +30,31 @@
     <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="317.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1"
              GridPane.columnSpan="3" GridPane.rowSpan="3">
         <Tab text="Courses">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+            <GridPane>
+                <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
+                    <TextField fx:id="searchField1" promptText="Search for a course" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="searchButton" text="Search" />
+                </HBox>
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <StackPane GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
+                    <Rectangle arcHeight="10" arcWidth="10" fill="TRANSPARENT" stroke="BLACK"
+                               height="150.0" width="450.0" fx:id="rectangle"/>
+                </StackPane>
+            </GridPane>
         </Tab>
         <Tab text="Rooms">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+            <GridPane>
+                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"
+                           GridPane.columnIndex="0"/>
+            </GridPane>
         </Tab>
         <Tab text="User">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+            <GridPane>
+                <TextField fx:id="searchField3" promptText="Search for an user" GridPane.rowIndex="0"
+                           GridPane.columnIndex="0"/>
+            </GridPane>
         </Tab>
     </TabPane>
 </GridPane>

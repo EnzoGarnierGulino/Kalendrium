@@ -118,6 +118,7 @@ public class LoginController {
     }
 
     private boolean authenticate(String username, String password) {
-        return "admin".equals(username) && "admin".equals(password);
+        // TODO: Implement authentication. It was set to empty strings for testing purposes.
+        return "".equals(username) && "".equals(password);
     }
 }
