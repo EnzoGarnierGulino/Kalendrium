@@ -3,7 +3,9 @@ package com.example.kalendrium;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -12,7 +14,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import java.io.File;
 

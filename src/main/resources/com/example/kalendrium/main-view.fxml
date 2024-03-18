@@ -34,8 +34,6 @@
                 <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
                     <TextField fx:id="searchField1" promptText="Search for a course" HBox.hgrow="ALWAYS" />
                     <Button fx:id="searchButton" text="Search" />
-                    <RadioButton fx:id="radioButton" text="Show only my courses" />
-                    <RadioButton fx:id="radioButton0" text="Show all courses" />
                 </HBox>
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>
@@ -46,17 +44,18 @@
                 </StackPane>
             </GridPane>
         </Tab>
-        <Tab text="Rooms">
-            <GridPane>
-                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"
-                           GridPane.columnIndex="0"/>
-            </GridPane>
-        </Tab>
-        <Tab text="User">
-            <GridPane>
-                <TextField fx:id="searchField3" promptText="Search for an user" GridPane.rowIndex="0"
-                           GridPane.columnIndex="0"/>
-            </GridPane>
-        </Tab>
+<!--        TODO: The two other tabs -->
+<!--        <Tab text="Rooms">-->
+<!--            <GridPane>-->
+<!--                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"-->
+<!--                           GridPane.columnIndex="0"/>-->
+<!--            </GridPane>-->
+<!--        </Tab>-->
+<!--        <Tab text="User">-->
+<!--            <GridPane>-->
+<!--                <TextField fx:id="searchField3" promptText="Search for an user" GridPane.rowIndex="0"-->
+<!--                           GridPane.columnIndex="0"/>-->
+<!--            </GridPane>-->
+<!--        </Tab>-->
     </TabPane>
 </GridPane>
