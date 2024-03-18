@@ -34,6 +34,8 @@
                 <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
                     <TextField fx:id="searchField1" promptText="Search for a course" HBox.hgrow="ALWAYS" />
                     <Button fx:id="searchButton" text="Search" />
+                    <Button fx:id="addEventButton" text="Add event" onAction="#addEvent"/>
+                    <Button fx:id="settingsButton" text="Settings" onAction="#openSettings"/>
                 </HBox>
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>

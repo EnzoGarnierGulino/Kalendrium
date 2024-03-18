@@ -13,9 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -39,14 +36,15 @@ public class LoginController {
 
     @FXML
     private Label passwordLabel;
-
-    protected static boolean isDarkMode = false;
-    private final Color DARKMODE = Color.rgb(38, 38, 38);
+    ConfigurationManager configManager = new ConfigurationManager();
 
 
     @FXML
     public void initialize() {
         File file = new File("images/KalendriumLogo.png");
+        if (configManager.isDarkThemeEnabled()) {
+            root.getStylesheets().add("https://raw.githubusercontent.com/antoniopelusi/JavaFX-Dark-Theme/main/style.css");
+        }
         Image image = new Image(file.toURI().toString());
         logo.setImage(image);
         Platform.runLater(() -> {
@@ -104,17 +102,9 @@ public class LoginController {
         }
     }
 
+    // CTRL + T to switch theme
     private void switchTheme() {
-        if (isDarkMode) {
-            root.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
-            usernameLabel.setTextFill(Color.BLACK);
-            passwordLabel.setTextFill(Color.BLACK);
-        } else {
-            root.setBackground(new Background(new BackgroundFill(DARKMODE, null, null)));
-            usernameLabel.setTextFill(Color.WHITE);
-            passwordLabel.setTextFill(Color.WHITE);
-        }
-        isDarkMode = !isDarkMode;
+        configManager.switchTheme(root);
     }
 
     private boolean authenticate(String username, String password) {

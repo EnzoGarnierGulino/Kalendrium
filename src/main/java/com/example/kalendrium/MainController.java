@@ -2,20 +2,18 @@ package com.example.kalendrium;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
-import javafx.scene.control.RadioButton;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainController {
     @FXML
@@ -30,14 +28,16 @@ public class MainController {
     @FXML
     private Rectangle rectangle;
 
-    private static boolean isDarkMode = LoginController.isDarkMode;
-    private final Color DARKMODE = Color.rgb(38, 38, 38);
+    ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
     private final float HEIGHT_MULTIPLICATOR = 0.6f;
     private final float WIDTH_MULTIPLICATOR = 0.8f;
 
     public void initialize() {
         File file = new File("images/KalendriumLogo.png");
+        if (configManager.isDarkThemeEnabled()) {
+            root.getStylesheets().add("https://raw.githubusercontent.com/antoniopelusi/JavaFX-Dark-Theme/main/style.css");
+        }
         Image image = new Image(file.toURI().toString());
         logo.setImage(image);
         tabPane.setTabMaxHeight(40);
@@ -65,12 +65,19 @@ public class MainController {
         });
     }
 
+    public void addEvent() {
+
+    }
+
+    public void openSettings() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
+        Parent settingsRoot = fxmlLoader.load();
+        Pane currentRoot = (Pane) root.getScene().getRoot();
+        currentRoot.getChildren().setAll(settingsRoot);
+    }
+
+    // CTRL + T to switch theme
     private void switchTheme() {
-        if (isDarkMode) {
-            root.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
-        } else {
-            root.setBackground(new Background(new BackgroundFill(DARKMODE, null, null)));
-        }
-        isDarkMode = !isDarkMode;
+        configManager.switchTheme(root);
     }
 }
