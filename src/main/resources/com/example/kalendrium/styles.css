@@ -1,0 +1,7 @@
+.tab-header-background {
+    -fx-background-color:transparent;
+}
+
+.tab-pane{
+    -fx-padding: 0 -1 -1 -1;
+}
