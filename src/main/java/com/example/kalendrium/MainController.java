@@ -11,9 +11,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import java.util.Calendar;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainController {
     @FXML
@@ -32,6 +35,7 @@ public class MainController {
     private final int TAB_MARGIN = 19;
     private final float HEIGHT_MULTIPLICATOR = 0.6f;
     private final float WIDTH_MULTIPLICATOR = 0.8f;
+
 
     public void initialize() {
         File file = new File("images/KalendriumLogo.png");
@@ -63,6 +67,27 @@ public class MainController {
                 }
             });
         });
+        IcsParser icsParser = new IcsParser();
+        List<Cours> listCoursEnzo = icsParser.parseICSFile("schedules/users/enzo.ics");
+        List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(listCoursEnzo, 20, Calendar.MARCH, 2024);
+        for (Cours cours : coursesOnTargetDate) {
+            System.out.println("Matiere: " + cours.getMatiere());
+            System.out.println("Salle: " + cours.getSalle());
+            System.out.println("DateStart:" + cours.getDateStart().getTime());
+            System.out.println("DateEnd:" + cours.getDateEnd().get(Calendar.HOUR_OF_DAY) + "h" + cours.getDateEnd().get(Calendar.MINUTE));
+        }
+    }
+
+    public static List<Cours> getCoursesOnTargetDate(List<Cours> listCoursEnzo, int targetDay, int targetMonth, int targetYear) {
+        List<Cours> coursesOnTargetDate = new ArrayList<>();
+        for (Cours cours : listCoursEnzo) {
+            if (cours.getDateStart().get(Calendar.DAY_OF_MONTH) == targetDay &&
+                    cours.getDateStart().get(Calendar.MONTH) == targetMonth &&
+                    cours.getDateStart().get(Calendar.YEAR) == targetYear) {
+                coursesOnTargetDate.add(cours);
+            }
+        }
+        return coursesOnTargetDate;
     }
 
     public void addEvent() {
