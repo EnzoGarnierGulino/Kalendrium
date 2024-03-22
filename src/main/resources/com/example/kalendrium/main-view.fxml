@@ -41,8 +41,7 @@
                     <Insets top="10" right="10" bottom="10" left="10"/>
                 </padding>
                 <StackPane GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
-                    <Rectangle arcHeight="10" arcWidth="10" fill="TRANSPARENT" stroke="BLACK"
-                               height="150.0" width="450.0" fx:id="rectangle"/>
+                    <GridPane fx:id="mainGridPane" />
                 </StackPane>
             </GridPane>
         </Tab>

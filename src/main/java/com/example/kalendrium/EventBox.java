@@ -1,12 +1,14 @@
 package com.example.kalendrium;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
-public class EventBox extends Pane{
+public class EventBox extends Pane {
 
     @FXML
     private Pane boite;
@@ -30,6 +32,16 @@ public class EventBox extends Pane{
     private String promotion;
     private String summary;
 
+    public EventBox() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("cours-component.fxml"));
+        fxmlLoader.setController(this);
+        try {
+            this.getChildren().add(fxmlLoader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setEventDetails(Calendar dateStart, Calendar dateEnd, String matiere, String enseignant, String td, String promotion, String salle, String memo, String type, String summary) {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
@@ -39,7 +51,7 @@ public class EventBox extends Pane{
         long dureeMinutes = (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60);
         System.out.println(dureeMinutes);
 
-        this.heure.setText(String.valueOf(dateStart.get(Calendar.HOUR_OF_DAY)) + "h" + String.format("%02d", dateStart.get(Calendar.MINUTE)) + " - " + String.valueOf(dateEnd.get(Calendar.HOUR_OF_DAY)) + "h" + String.format("%02d", dateEnd.get(Calendar.MINUTE)));
+        this.heure.setText(dateStart.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateStart.get(Calendar.MINUTE)) + " - " + dateEnd.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateEnd.get(Calendar.MINUTE)));
         this.matiere.setText(matiere);
         this.enseignant.setText(enseignant);
         this.td.setText(td);

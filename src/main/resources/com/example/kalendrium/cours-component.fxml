@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="boite" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: cyan; -fx-background-radius: 20px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.kalendrium.EventBox">
+<Pane fx:id="boite" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #468cc7; -fx-background-radius: 3px;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="heure" layoutX="14.0" layoutY="14.0" text="Label" />
         <Label fx:id="matiere" layoutX="14.0" layoutY="38.0" text="Label" />
