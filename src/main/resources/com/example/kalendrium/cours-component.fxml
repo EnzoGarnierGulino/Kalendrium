@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="boite" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #468cc7; -fx-background-radius: 3px;"
+<Pane fx:id="boite" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #468cc7; -fx-background-radius: 3px;
+-fx-border-color: black; -fx-border-width: 2px;"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="heure" layoutX="14.0" layoutY="14.0" text="Label" />

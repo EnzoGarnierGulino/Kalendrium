@@ -49,7 +49,6 @@ public class EventBox extends Pane {
         this.summary = summary;
 
         long dureeMinutes = (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60);
-        System.out.println(dureeMinutes);
 
         this.heure.setText(dateStart.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateStart.get(Calendar.MINUTE)) + " - " + dateEnd.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateEnd.get(Calendar.MINUTE)));
         this.matiere.setText(matiere);
@@ -61,5 +60,9 @@ public class EventBox extends Pane {
 
         boite.setPrefHeight(dureeMinutes);
         this.heure.setPrefHeight(2);
+        if (type.equals("Evaluation")) {
+            boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
+                    "-fx-border-color: black; -fx-border-width: 2px;");
+        }
     }
 }

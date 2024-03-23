@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
 
 import java.util.*;
@@ -91,6 +92,10 @@ public class MainController {
         List<Cours> listCoursEnzo = parser.parseICSFile("schedules/users/enzo.ics");
         Calendar startDate = Calendar.getInstance();
         startDate.set(2024, Calendar.MARCH, 18); // Start from Monday
+        for (int i = 0; i < 24; i++) { // Assuming 18 rows, adjust as needed
+            RowConstraints rowConstraints = new RowConstraints(30); // Adjust height as needed
+            mainGridPane.getRowConstraints().add(rowConstraints);
+        }
 
         for (int i = 0; i < 5; i++) { // Loop for each day from Monday to Friday
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(listCoursEnzo, startDate.get(Calendar.DAY_OF_MONTH),
@@ -98,9 +103,6 @@ public class MainController {
 
             // Sort the courses by start time
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
-
-            // Keep track of the occupied rows to handle course overlap
-            boolean[] occupiedRows = new boolean[24 * 2]; // Assuming 30-minute intervals, from 8:00 to 20:00
 
             // Iterate through courses on the target date and add them to the grid pane
             for (Cours cours : coursesOnTargetDate) {
@@ -114,16 +116,9 @@ public class MainController {
                 int startRowIndex = ((startHour - 8) * 2) + (startMinute / 30);
                 int endRowIndex = ((endHour - 8) * 2) + (endMinute / 30);
 
-                // Find an available row for the course
-                int rowIndex = findAvailableRow(startRowIndex, endRowIndex, occupiedRows);
+                System.out.println("Course: " + cours.getMatiere() + " - " + startRowIndex + " - " + endRowIndex);
 
-                // Mark the rows occupied by this course
-                for (int j = startRowIndex; j < endRowIndex; j++) {
-                    occupiedRows[j] = true;
-                }
-
-                // Calculate column index for the current day
-                int column = i;
+                int span = endRowIndex - startRowIndex;
 
                 // Create and set details for the event box
                 EventBox eventBox = new EventBox();
@@ -132,23 +127,15 @@ public class MainController {
                         cours.getMemo(), cours.getType(), cours.getSummary());
 
                 // Add the event box to the grid pane
-                mainGridPane.add(eventBox, column, rowIndex);
+                System.out.println("Adding event box to grid pane");
+                System.out.println("Row index: " + startRowIndex + " - Span: " + span);
+                mainGridPane.add(eventBox, i, startRowIndex, 1, span);
             }
 
             // Move to the next day
             startDate.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
-
-    private int findAvailableRow(int startRow, int endRow, boolean[] occupiedRows) {
-        int rowIndex = startRow;
-        while (rowIndex < occupiedRows.length && occupiedRows[rowIndex]) {
-            rowIndex++;
-        }
-        return rowIndex;
-    }
-
-
 
     public void openSettings() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
