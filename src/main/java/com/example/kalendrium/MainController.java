@@ -1,18 +1,17 @@
 package com.example.kalendrium;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 
 import java.util.*;
 
@@ -36,7 +35,7 @@ public class MainController {
     private final int TAB_MARGIN = 19;
     private final int NUMBER_OF_ROWS = 24;
     private double rowHeight = 28;
-    private double columnWidth = 128;
+    private double columnWidth = 640/5;
 
 
     public void initialize() {
@@ -48,6 +47,7 @@ public class MainController {
         logo.setImage(image);
         tabPane.setTabMaxHeight(40);
         tabPane.setTabMinHeight(40);
+
         // Width tracker
         root.widthProperty().addListener((observable, oldValue, newValue) -> {
             double newTabWidth = newValue.doubleValue() / 3 - TAB_MARGIN;
@@ -57,12 +57,14 @@ public class MainController {
             mainGridPane.setPrefWidth(newRectangleWidth);
             columnWidth = root.getWidth() / 5;
         });
+
         // Height tracker
         root.heightProperty().addListener((observable, oldValue, newValue) -> {
             double newRectangleHeight = newValue.doubleValue();
             mainGridPane.setPrefHeight(newRectangleHeight);
             rowHeight = root.getHeight() / NUMBER_OF_ROWS;
         });
+
         // Commands tracker
         Platform.runLater(() -> {
             root.getScene().setOnKeyPressed(e -> {
@@ -87,8 +89,9 @@ public class MainController {
     }
 
     public void drawSchedule() {
+        mainGridPane.getChildren().clear();
         IcsParser parser = new IcsParser();
-        List<Cours> listCoursEnzo = parser.parseICSFile("schedules/users/enzo.ics");
+        List<Cours> courses = parser.parseICSFile("schedules/users/enzo.ics");
         Calendar startDate = Calendar.getInstance();
         startDate.set(2024, Calendar.MARCH, 18);
 
@@ -96,6 +99,7 @@ public class MainController {
             RowConstraints rowConstraints = new RowConstraints(rowHeight);
             mainGridPane.getRowConstraints().add(rowConstraints);
         }
+
         for (int k = 0; k < 5; k++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
             columnConstraints.setPercentWidth(20);
@@ -103,11 +107,13 @@ public class MainController {
         }
 
         for (int i = 0; i < 5; i++) {
-            List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(listCoursEnzo, startDate.get(Calendar.DAY_OF_MONTH),
+            List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(courses, startDate.get(Calendar.DAY_OF_MONTH),
                     startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
 
             Label label = new Label();
+            label.setAlignment(Pos.CENTER);
+            label.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
             switch (i) {
                 case 0 -> label.setText("Monday " + startDate.get(Calendar.DAY_OF_MONTH));
                 case 1 -> label.setText("Tuesday " + startDate.get(Calendar.DAY_OF_MONTH));
@@ -130,8 +136,9 @@ public class MainController {
                 eventBox.setEventDetails(cours.getDateStart(), cours.getDateEnd(), cours.getMatiere(),
                         cours.getEnseignant(), cours.getTd(), cours.getPromotion(), cours.getSalle(),
                         cours.getMemo(), cours.getType(), cours.getSummary());
-                eventBox.setMaxHeight(rowHeight * span);
-                eventBox.setMaxWidth(columnWidth);
+
+                eventBox.boite.prefHeightProperty().bind(Bindings.createDoubleBinding(() -> rowHeight * span, root.heightProperty()));
+                eventBox.boite.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> columnWidth, root.widthProperty()));
                 mainGridPane.add(eventBox, i, startRowIndex, 1, span);
             }
             startDate.add(Calendar.DAY_OF_MONTH, 1);

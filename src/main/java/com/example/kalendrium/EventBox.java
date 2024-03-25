@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 public class EventBox extends Pane {
 
     @FXML
-    private VBox boite;
+    protected VBox boite;
     @FXML
     private Label heure;
     @FXML
@@ -57,13 +57,19 @@ public class EventBox extends Pane {
         this.type.setText(type);
         this.memo.setText(memo);
 
-        boite.setMinHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
-        boite.setMaxHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
-        boite.setPrefWidth(300);
+        boite.setPrefHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
 
         if (type.equals("Evaluation")) {
             boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
                     "-fx-border-color: black; -fx-border-width: 2px;");
         }
+
+        this.td.setWrapText(true);
+        this.memo.setWrapText(true);
+        this.heure.setWrapText(true);
+        this.matiere.setWrapText(true);
+        this.enseignant.setWrapText(true);
+        this.salle.setWrapText(true);
+        this.type.setWrapText(true);
     }
 }
