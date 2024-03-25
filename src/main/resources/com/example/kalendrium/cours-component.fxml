@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="boite" spacing="5" style="-fx-background-color: #468cc7; -fx-background-radius: 3px; -fx-border-color: black; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="boite" style="-fx-background-color: #468cc7; -fx-background-radius: 3px; -fx-border-color: black;
+-fx-border-width: 2px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="heure" text="Label" />
         <Label fx:id="matiere" text="Label" />

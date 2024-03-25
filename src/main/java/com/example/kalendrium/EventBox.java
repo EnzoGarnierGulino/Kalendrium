@@ -59,6 +59,7 @@ public class EventBox extends Pane {
 
         boite.setMinHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
         boite.setMaxHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
+        boite.setPrefWidth(300);
 
         if (type.equals("Evaluation")) {
             boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +

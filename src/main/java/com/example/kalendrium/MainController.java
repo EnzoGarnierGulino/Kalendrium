@@ -96,15 +96,16 @@ public class MainController {
             RowConstraints rowConstraints = new RowConstraints(rowHeight);
             mainGridPane.getRowConstraints().add(rowConstraints);
         }
+        for (int k = 0; k < 5; k++) {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setPercentWidth(20);
+            mainGridPane.getColumnConstraints().add(columnConstraints);
+        }
 
         for (int i = 0; i < 5; i++) {
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(listCoursEnzo, startDate.get(Calendar.DAY_OF_MONTH),
                     startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
-
-            ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(100.0 / 5);
-            mainGridPane.getColumnConstraints().add(columnConstraints);
 
             Label label = new Label();
             switch (i) {
