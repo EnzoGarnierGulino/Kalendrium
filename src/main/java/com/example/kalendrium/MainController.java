@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,7 +13,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.Rectangle;
 
 import java.util.*;
 
@@ -34,8 +34,9 @@ public class MainController {
 
     ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
-    private final float HEIGHT_MULTIPLICATOR = 0.6f;
-    private final float WIDTH_MULTIPLICATOR = 0.8f;
+    private final int NUMBER_OF_ROWS = 24;
+    private double rowHeight = 28;
+    private double columnWidth = 128;
 
 
     public void initialize() {
@@ -52,13 +53,15 @@ public class MainController {
             double newTabWidth = newValue.doubleValue() / 3 - TAB_MARGIN;
             tabPane.setTabMinWidth(newTabWidth);
             tabPane.setTabMaxWidth(newTabWidth);
-            double newRectangleWidth = newValue.doubleValue() * WIDTH_MULTIPLICATOR;
+            double newRectangleWidth = newValue.doubleValue();
             mainGridPane.setPrefWidth(newRectangleWidth);
+            columnWidth = root.getWidth() / 5;
         });
         // Height tracker
         root.heightProperty().addListener((observable, oldValue, newValue) -> {
-            double newRectangleHeight = newValue.doubleValue() * HEIGHT_MULTIPLICATOR;
+            double newRectangleHeight = newValue.doubleValue();
             mainGridPane.setPrefHeight(newRectangleHeight);
+            rowHeight = root.getHeight() / NUMBER_OF_ROWS;
         });
         // Commands tracker
         Platform.runLater(() -> {
@@ -83,56 +86,53 @@ public class MainController {
         return coursesOnTargetDate;
     }
 
-    public void addEvent() {
-
-    }
-
     public void drawSchedule() {
         IcsParser parser = new IcsParser();
         List<Cours> listCoursEnzo = parser.parseICSFile("schedules/users/enzo.ics");
         Calendar startDate = Calendar.getInstance();
-        startDate.set(2024, Calendar.MARCH, 18); // Start from Monday
-        for (int i = 0; i < 24; i++) { // Assuming 18 rows, adjust as needed
-            RowConstraints rowConstraints = new RowConstraints(30); // Adjust height as needed
+        startDate.set(2024, Calendar.MARCH, 18);
+
+        for (int j = 0; j < NUMBER_OF_ROWS; j++) {
+            RowConstraints rowConstraints = new RowConstraints(rowHeight);
             mainGridPane.getRowConstraints().add(rowConstraints);
         }
 
-        for (int i = 0; i < 5; i++) { // Loop for each day from Monday to Friday
+        for (int i = 0; i < 5; i++) {
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(listCoursEnzo, startDate.get(Calendar.DAY_OF_MONTH),
                     startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
-
-            // Sort the courses by start time
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
 
-            // Iterate through courses on the target date and add them to the grid pane
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setPercentWidth(100.0 / 5);
+            mainGridPane.getColumnConstraints().add(columnConstraints);
+
+            Label label = new Label();
+            switch (i) {
+                case 0 -> label.setText("Monday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 1 -> label.setText("Tuesday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 2 -> label.setText("Wednesday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 3 -> label.setText("Thursday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 4 -> label.setText("Friday " + startDate.get(Calendar.DAY_OF_MONTH));
+            }
+            mainGridPane.add(label, i, 0);
+
             for (Cours cours : coursesOnTargetDate) {
-                // Calculate the start and end time of the course
                 int startHour = cours.getDateStart().get(Calendar.HOUR_OF_DAY);
                 int startMinute = cours.getDateStart().get(Calendar.MINUTE);
                 int endHour = cours.getDateEnd().get(Calendar.HOUR_OF_DAY);
                 int endMinute = cours.getDateEnd().get(Calendar.MINUTE);
-
-                // Calculate row index for the current course
-                int startRowIndex = ((startHour - 8) * 2) + (startMinute / 30);
-                int endRowIndex = ((endHour - 8) * 2) + (endMinute / 30);
-
-                System.out.println("Course: " + cours.getMatiere() + " - " + startRowIndex + " - " + endRowIndex);
-
+                int startRowIndex = ((startHour - 8) * 2) + (startMinute / 30) + 1;
+                int endRowIndex = ((endHour - 8) * 2) + (endMinute / 30) + 1;
                 int span = endRowIndex - startRowIndex;
 
-                // Create and set details for the event box
                 EventBox eventBox = new EventBox();
                 eventBox.setEventDetails(cours.getDateStart(), cours.getDateEnd(), cours.getMatiere(),
                         cours.getEnseignant(), cours.getTd(), cours.getPromotion(), cours.getSalle(),
                         cours.getMemo(), cours.getType(), cours.getSummary());
-
-                // Add the event box to the grid pane
-                System.out.println("Adding event box to grid pane");
-                System.out.println("Row index: " + startRowIndex + " - Span: " + span);
+                eventBox.setMaxHeight(rowHeight * span);
+                eventBox.setMaxWidth(columnWidth);
                 mainGridPane.add(eventBox, i, startRowIndex, 1, span);
             }
-
-            // Move to the next day
             startDate.add(Calendar.DAY_OF_MONTH, 1);
         }
     }

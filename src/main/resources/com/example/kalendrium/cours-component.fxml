@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<Pane fx:id="boite" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #468cc7; -fx-background-radius: 3px;
--fx-border-color: black; -fx-border-width: 2px;"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="boite" spacing="5" style="-fx-background-color: #468cc7; -fx-background-radius: 3px; -fx-border-color: black; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label fx:id="heure" layoutX="14.0" layoutY="14.0" text="Label" />
-        <Label fx:id="matiere" layoutX="14.0" layoutY="38.0" text="Label" />
-        <Label fx:id="enseignant" layoutX="14.0" layoutY="56.0" text="Label" />
-        <Label fx:id="td" layoutX="14.0" layoutY="74.0" text="Label" />
-        <Label fx:id="salle" layoutX="14.0" layoutY="91.0" text="Label" />
-        <Label fx:id="type" layoutX="14.0" layoutY="109.0" text="Label" />
-        <Label fx:id="memo" layoutX="14.0" layoutY="127.0" text="Label" />
+        <Label fx:id="heure" text="Label" />
+        <Label fx:id="matiere" text="Label" />
+        <Label fx:id="enseignant" text="Label" />
+        <Label fx:id="td" text="Label" />
+        <Label fx:id="salle" text="Label" />
+        <Label fx:id="type" text="Label" />
+        <Label fx:id="memo" text="Label" />
     </children>
-</Pane>
+</VBox>

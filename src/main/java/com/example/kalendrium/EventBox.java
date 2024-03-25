@@ -6,12 +6,14 @@ import java.util.Calendar;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 public class EventBox extends Pane {
 
     @FXML
-    private Pane boite;
+    private VBox boite;
     @FXML
     private Label heure;
     @FXML
@@ -47,9 +49,6 @@ public class EventBox extends Pane {
         this.dateEnd = dateEnd;
         this.promotion = promotion;
         this.summary = summary;
-
-        long dureeMinutes = (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60);
-
         this.heure.setText(dateStart.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateStart.get(Calendar.MINUTE)) + " - " + dateEnd.get(Calendar.HOUR_OF_DAY) + "h" + String.format("%02d", dateEnd.get(Calendar.MINUTE)));
         this.matiere.setText(matiere);
         this.enseignant.setText(enseignant);
@@ -58,8 +57,9 @@ public class EventBox extends Pane {
         this.type.setText(type);
         this.memo.setText(memo);
 
-        boite.setPrefHeight(dureeMinutes);
-        this.heure.setPrefHeight(2);
+        boite.setMinHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
+        boite.setMaxHeight((double) (dateEnd.getTimeInMillis() - dateStart.getTimeInMillis()) / (1000 * 60));
+
         if (type.equals("Evaluation")) {
             boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
                     "-fx-border-color: black; -fx-border-width: 2px;");
