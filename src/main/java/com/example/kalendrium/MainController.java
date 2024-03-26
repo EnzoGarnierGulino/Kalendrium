@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -96,6 +96,8 @@ public class MainController {
         IcsParser parser = new IcsParser();
         List<Cours> courses = parser.parseICSFile("schedules/users/enzo.ics");
         Calendar startDate = Calendar.getInstance();
+
+        // Set the start date for the schedule
         startDate.set(2024, Calendar.MARCH, 18);
 
         for (int j = 0; j < NUMBER_OF_ROWS; j++) {
@@ -103,10 +105,10 @@ public class MainController {
             rowConstraints.setPercentHeight((double) 100 / NUMBER_OF_ROWS);
             mainGridPane.getRowConstraints().add(rowConstraints);
         }
-
         for (int k = 0; k < NUMBER_OF_COLUMNS; k++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
             columnConstraints.setPercentWidth((double) 100 / NUMBER_OF_COLUMNS);
+            columnConstraints.setHalignment(HPos.CENTER);
             mainGridPane.getColumnConstraints().add(columnConstraints);
         }
 
@@ -142,7 +144,6 @@ public class MainController {
                         cours.getMemo(), cours.getType(), cours.getSummary());
 
                 eventBox.boite.setMinHeight(0);
-                System.out.println(mainGridPane.heightProperty().getValue() + " " + NUMBER_OF_ROWS + " " + span + " " + span);
                 eventBox.boite.prefHeightProperty().bind(Bindings.multiply(Bindings.divide(mainGridPane.heightProperty(), NUMBER_OF_ROWS - 1), span));
                 eventBox.boite.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> columnWidth, root.widthProperty()));
                 mainGridPane.add(eventBox, i, startRowIndex);

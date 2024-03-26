@@ -1,6 +1,7 @@
 package com.example.kalendrium;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Cours {
     
@@ -121,5 +122,12 @@ public class Cours {
             ", type='" + type + '\'' +
             ", summary='" + summary + '\'' +
             '}';
+    }
+
+    public String toStringDate() {
+        return "Cours{" +
+                "dateStart=" + dateStart +
+                ", dateEnd=" + dateEnd +
+                '}';
     }
 }

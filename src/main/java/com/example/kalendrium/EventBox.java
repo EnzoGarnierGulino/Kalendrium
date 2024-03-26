@@ -65,6 +65,13 @@ public class EventBox extends Pane implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.td.setWrapText(true);
+        this.memo.setWrapText(true);
+        this.heure.setWrapText(true);
+        this.matiere.setWrapText(true);
+        this.enseignant.setWrapText(true);
+        this.salle.setWrapText(true);
+        this.type.setWrapText(true);
     }
 
     public void setEventDetails(Calendar dateStart, Calendar dateEnd, String matiere, String enseignant, String td, String promotion, String salle, String memo, String type, String summary) {
@@ -80,17 +87,23 @@ public class EventBox extends Pane implements Initializable {
         this.type.setText(type);
         this.memo.setText(memo);
 
-        this.td.setWrapText(true);
-        this.memo.setWrapText(true);
-        this.heure.setWrapText(true);
-        this.matiere.setWrapText(true);
-        this.enseignant.setWrapText(true);
-        this.salle.setWrapText(true);
-        this.type.setWrapText(true);
-
         if (type.equals("Evaluation")) {
             boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
                     "-fx-border-color: black; -fx-border-width: 2px;");
         }
+    }
+
+    public void createEmptyEvent(Calendar dateStart, Calendar dateEnd) {
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.promotion = null;
+        this.summary = null;
+        this.heure.setText("");
+        this.matiere.setText("");
+        this.enseignant.setText("");
+        this.td.setText("");
+        this.salle.setText("");
+        this.type.setText("");
+        this.memo.setText("");
     }
 }
