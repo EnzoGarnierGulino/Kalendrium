@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import java.io.File;
@@ -147,5 +148,44 @@ public class MainController {
     // CTRL + T to switch theme
     private void switchTheme() {
         configManager.switchTheme(root);
+    }
+
+    private static List<List<List<Cours>>> getLists(List<Cours> coursByDate) {
+        List<List<List<Cours>>> LALIST = new ArrayList<>();
+        Calendar latestCours = coursByDate.get(0).getDateStart();
+        boolean coursNotPlaced = true;
+        for (Cours cours : coursByDate) {
+            if (latestCours.before(cours.getDateStart()) || latestCours.equals(cours.getDateStart())) {
+                LALIST.add(new ArrayList<>());
+            }
+            List<List<Cours>> latestBlock = LALIST.get(LALIST.size()-1);
+            if (latestBlock.isEmpty()) {
+                latestBlock.add(new ArrayList<>());
+                latestBlock.get(0).add(cours);
+                if (cours.getDateEnd().after(latestCours)) {
+                    latestCours = cours.getDateEnd();
+                }
+            } else {
+                for (List<Cours> list : latestBlock) {
+                    if (list.get(list.size()-1).getDateEnd().before(cours.getDateStart()) || list.get(list.size()-1).getDateEnd().equals(cours.getDateStart())) {
+                        list.add(cours);
+                        if (cours.getDateEnd().after(latestCours)) {
+                            latestCours = cours.getDateEnd();
+                        }
+                        coursNotPlaced = false;
+                        break;
+                    }
+                }
+                if (coursNotPlaced) {
+                    latestBlock.add(new ArrayList<>());
+                    latestBlock.get(latestBlock.size()-1).add(cours);
+                    if (cours.getDateEnd().after(latestCours)) {
+                        latestCours = cours.getDateEnd();
+                    }
+                }
+                coursNotPlaced = true;
+            }
+        }
+        return LALIST;
     }
 }
