@@ -123,11 +123,4 @@ public class Cours {
             ", summary='" + summary + '\'' +
             '}';
     }
-
-    public String toStringDate() {
-        return "Cours{" +
-                "dateStart=" + dateStart +
-                ", dateEnd=" + dateEnd +
-                '}';
-    }
 }

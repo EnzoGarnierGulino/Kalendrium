@@ -87,23 +87,11 @@ public class EventBox extends Pane implements Initializable {
         this.type.setText(type);
         this.memo.setText(memo);
 
-        if (type.equals("Evaluation")) {
-            boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
-                    "-fx-border-color: black; -fx-border-width: 2px;");
+        if (type != null && !type.isEmpty()) {
+            if (type.equals("Evaluation")) {
+                boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
+                        "-fx-border-color: black; -fx-border-width: 2px;");
+            }
         }
-    }
-
-    public void createEmptyEvent(Calendar dateStart, Calendar dateEnd) {
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.promotion = null;
-        this.summary = null;
-        this.heure.setText("");
-        this.matiere.setText("");
-        this.enseignant.setText("");
-        this.td.setText("");
-        this.salle.setText("");
-        this.type.setText("");
-        this.memo.setText("");
     }
 }

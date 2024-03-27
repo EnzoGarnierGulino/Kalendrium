@@ -35,10 +35,10 @@ public class MainController {
     ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
     private final int NUMBER_OF_ROWS = 24;
-    private int NUMBER_OF_COLUMNS = 5;
+    private int NUMBER_OF_COLUMNS = 7;
     private double rowHeight = (double) (480 / NUMBER_OF_ROWS);
     private double columnWidth = (double) 640 / NUMBER_OF_COLUMNS;
-
+    private final Calendar startDate = Calendar.getInstance();
 
     public void initialize() {
         File file = new File("images/KalendriumLogo.png");
@@ -49,6 +49,19 @@ public class MainController {
         logo.setImage(image);
         tabPane.setTabMaxHeight(40);
         tabPane.setTabMinHeight(40);
+
+        for (int j = 0; j < NUMBER_OF_ROWS; j++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setPercentHeight((double) 100 / NUMBER_OF_ROWS);
+            mainGridPane.getRowConstraints().add(rowConstraints);
+        }
+
+        for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setPercentWidth((double) 100 / NUMBER_OF_COLUMNS);
+            columnConstraints.setHalignment(HPos.CENTER);
+            mainGridPane.getColumnConstraints().add(columnConstraints);
+        }
 
         // Width tracker
         root.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -75,42 +88,29 @@ public class MainController {
                     switchTheme();
                 }
             });
+            root.getScene().setOnKeyPressed(e -> {
+                if (e.getCode() == KeyCode.L) {
+                    updateDate(-7);
+                }
+                if (e.getCode() == KeyCode.R) {
+                    updateDate(7);
+                }
+            });
         });
+
+        startDate.set(2024, Calendar.MARCH, 18);
         this.drawSchedule();
     }
 
-    public static List<Cours> getCoursesOnTargetDate(List<Cours> courses, int targetDay, int targetMonth, int targetYear) {
-        List<Cours> coursesOnTargetDate = new ArrayList<>();
-        for (Cours cours : courses) {
-            if (cours.getDateStart().get(Calendar.DAY_OF_MONTH) == targetDay &&
-                    cours.getDateStart().get(Calendar.MONTH) == targetMonth &&
-                    cours.getDateStart().get(Calendar.YEAR) == targetYear) {
-                coursesOnTargetDate.add(cours);
-            }
-        }
-        return coursesOnTargetDate;
+    public void updateDate(int amount) {
+        startDate.add(Calendar.DAY_OF_MONTH, amount);
+        this.drawSchedule();
     }
 
     public void drawSchedule() {
         mainGridPane.getChildren().clear();
         IcsParser parser = new IcsParser();
         List<Cours> courses = parser.parseICSFile("schedules/users/enzo.ics");
-        Calendar startDate = Calendar.getInstance();
-
-        // Set the start date for the schedule
-        startDate.set(2024, Calendar.MARCH, 18);
-
-        for (int j = 0; j < NUMBER_OF_ROWS; j++) {
-            RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setPercentHeight((double) 100 / NUMBER_OF_ROWS);
-            mainGridPane.getRowConstraints().add(rowConstraints);
-        }
-        for (int k = 0; k < NUMBER_OF_COLUMNS; k++) {
-            ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth((double) 100 / NUMBER_OF_COLUMNS);
-            columnConstraints.setHalignment(HPos.CENTER);
-            mainGridPane.getColumnConstraints().add(columnConstraints);
-        }
 
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(courses, startDate.get(Calendar.DAY_OF_MONTH),
@@ -118,7 +118,6 @@ public class MainController {
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
 
             Label label = new Label();
-            label.setAlignment(Pos.CENTER);
             label.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
             switch (i) {
                 case 0 -> label.setText("Monday " + startDate.get(Calendar.DAY_OF_MONTH));
@@ -126,6 +125,8 @@ public class MainController {
                 case 2 -> label.setText("Wednesday " + startDate.get(Calendar.DAY_OF_MONTH));
                 case 3 -> label.setText("Thursday " + startDate.get(Calendar.DAY_OF_MONTH));
                 case 4 -> label.setText("Friday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 5 -> label.setText("Saturday " + startDate.get(Calendar.DAY_OF_MONTH));
+                case 6 -> label.setText("Sunday " + startDate.get(Calendar.DAY_OF_MONTH));
             }
             mainGridPane.add(label, i, 0);
 
@@ -150,6 +151,18 @@ public class MainController {
             }
             startDate.add(Calendar.DAY_OF_MONTH, 1);
         }
+    }
+
+    public static List<Cours> getCoursesOnTargetDate(List<Cours> courses, int targetDay, int targetMonth, int targetYear) {
+        List<Cours> coursesOnTargetDate = new ArrayList<>();
+        for (Cours cours : courses) {
+            if (cours.getDateStart().get(Calendar.DAY_OF_MONTH) == targetDay &&
+                    cours.getDateStart().get(Calendar.MONTH) == targetMonth &&
+                    cours.getDateStart().get(Calendar.YEAR) == targetYear) {
+                coursesOnTargetDate.add(cours);
+            }
+        }
+        return coursesOnTargetDate;
     }
 
     public void openSettings() throws IOException {
