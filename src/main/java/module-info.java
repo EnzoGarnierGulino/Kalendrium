@@ -3,6 +3,7 @@ module com.example.kalendrium {
     requires javafx.fxml;
     requires ical4j;
     requires json.simple;
+    requires java.desktop;
 
 
     opens com.example.kalendrium to javafx.fxml;
