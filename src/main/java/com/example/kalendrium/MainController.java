@@ -13,6 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.shape.Rectangle;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -89,6 +91,10 @@ public class MainController {
     }
 
     public void drawSchedule() {
+        DateTime dtStart = CreateEvent.createDateTime(2024, 3, 18, 11, 30);
+        DateTime dtEnd = CreateEvent.createDateTime(2024, 3, 18, 13, 0);
+        VEvent event = CreateEvent.createEvent(dtStart, dtEnd, "Bonjour", "C'est un test", "la bas");
+        CreateEvent.addNoneOverlapingEvent("schedules/users/enzo.ics", event);
         IcsParser parser = new IcsParser();
         List<Cours> listCoursEnzo = parser.parseICSFile("schedules/users/enzo.ics");
         Calendar startDate = Calendar.getInstance();

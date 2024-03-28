@@ -60,7 +60,7 @@ public class EventBox extends Pane {
 
         boite.setPrefHeight(dureeMinutes);
         this.heure.setPrefHeight(2);
-        if (type.equals("Evaluation")) {
+        if (type != null && type.equals("Evaluation")) {
             boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
                     "-fx-border-color: black; -fx-border-width: 2px;");
         }
