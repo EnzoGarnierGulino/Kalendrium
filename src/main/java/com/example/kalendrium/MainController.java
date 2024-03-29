@@ -9,10 +9,8 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -21,16 +19,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Popup;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.component.VEvent;
 import org.controlsfx.control.CheckComboBox;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-
-
-import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -50,7 +40,6 @@ public class MainController {
     public GridPane mainGridPane;
     @FXML
     private ComboBox<String> filterComboBox;
-
     @FXML
     public CheckComboBox<String> matieres;
     @FXML
@@ -59,8 +48,6 @@ public class MainController {
     public CheckComboBox<String> promotions;
     @FXML
     public CheckComboBox<String> types;
-
-
     ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
     private final int NUMBER_OF_ROWS = 24;
@@ -71,7 +58,6 @@ public class MainController {
     private final Calendar startDate = Calendar.getInstance();
 
     public void initialize() {
-
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
             drawSchedule();
         });
@@ -100,7 +86,6 @@ public class MainController {
             rowConstraints.setPercentHeight((double) 100 / NUMBER_OF_ROWS);
             mainGridPane.getRowConstraints().add(rowConstraints);
         }
-
         initializeColumns();
 
         // Width tracker
@@ -189,8 +174,6 @@ public class MainController {
         IcsParser parser = new IcsParser();
         List<Cours> courses = parser.parseICSFile("schedules/users/enzo.ics");
 
-        List<Cours> memoire = courses;
-
         List<List<String>> uniqueProperties = CoursUtils.getUniqueCoursProperties(courses);
         setCheckComboBoxFiltres(uniqueProperties);
         List<String> selectedMatieres = this.matieres.getCheckModel().getCheckedItems();
@@ -199,12 +182,6 @@ public class MainController {
         List<String> selectedTypes = this.types.getCheckModel().getCheckedItems();
 
         courses = CoursFilter.filterCours(courses, selectedMatieres, selectedSalles, selectedPromotions, selectedTypes);
-        Calendar startDate = Calendar.getInstance();
-        startDate.set(2024, Calendar.MARCH, 18); // Start from Monday
-        for (int i = 0; i < 24; i++) { // Assuming 18 rows, adjust as needed
-            RowConstraints rowConstraints = new RowConstraints(30); // Adjust height as needed
-            mainGridPane.getRowConstraints().add(rowConstraints);
-        }
 
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(courses, startDate.get(Calendar.DAY_OF_MONTH),
@@ -237,14 +214,12 @@ public class MainController {
                 });
                 container.getChildren().add(rightArrow);
             }
-
             mainGridPane.add(container, i, 0);
 
             for (Cours cours : coursesOnTargetDate) {
                 if (coursesOnTargetDate.size() == 0) {
                     continue;
                 }
-
                 int startHour = cours.getDateStart().get(Calendar.HOUR_OF_DAY);
                 int startMinute = cours.getDateStart().get(Calendar.MINUTE);
                 int endHour = cours.getDateEnd().get(Calendar.HOUR_OF_DAY);
@@ -266,8 +241,6 @@ public class MainController {
                 eventBox.boite.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> columnWidth, root.widthProperty()));
                 mainGridPane.add(eventBox, i, startRowIndex);
             }
-
-            // Move to the next day
             startDate.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
