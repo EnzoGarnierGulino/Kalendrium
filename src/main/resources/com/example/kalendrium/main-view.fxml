@@ -8,6 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.shape.Rectangle?>
 
+<?import org.controlsfx.control.CheckComboBox?>
 <GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
           prefWidth="640.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.kalendrium.MainController">
@@ -36,6 +37,10 @@
                     <Button fx:id="searchButton" text="Search" />
                     <Button fx:id="addEventButton" text="Add event" onAction="#addEvent"/>
                     <Button fx:id="settingsButton" text="Settings" onAction="#openSettings"/>
+                    <CheckComboBox fx:id="matieres" prefWidth="200"/>
+                    <CheckComboBox fx:id="salles" prefWidth="200"/>
+                    <CheckComboBox fx:id="promotions" prefWidth="200"/>
+                    <CheckComboBox fx:id="types" prefWidth="200"/>
                 </HBox>
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>
