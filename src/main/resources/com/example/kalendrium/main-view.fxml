@@ -7,6 +7,8 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
           prefWidth="640.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.kalendrium.MainController">
@@ -33,6 +35,15 @@
                 <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
                     <TextField fx:id="searchField1" promptText="Search for a course" HBox.hgrow="ALWAYS" />
                     <Button fx:id="searchButton" text="Search" />
+                    <ComboBox fx:id="filterComboBox" promptText="Filter">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Day" />
+                                <String fx:value="Week"  />
+                                <String fx:value="Month" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
                     <Button fx:id="addEventButton" text="Add event"/>
                     <Button fx:id="settingsButton" text="Settings" onAction="#openSettings"/>
                 </HBox>
