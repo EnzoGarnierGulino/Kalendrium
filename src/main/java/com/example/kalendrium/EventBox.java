@@ -87,6 +87,12 @@ public class EventBox extends Pane implements Initializable {
         this.type.setText(type);
         this.memo.setText(memo);
 
+        if (matiere != null && !matiere.isEmpty()) {
+            if (matiere.equals("Reservation de salles")) {
+                boite.setStyle("-fx-background-color: #258111; -fx-background-radius: 3px;\n" +
+                        "-fx-border-color: black; -fx-border-width: 2px;");
+            }
+        }
         if (type != null && !type.isEmpty()) {
             if (type.equals("Evaluation")) {
                 boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
