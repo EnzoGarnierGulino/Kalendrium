@@ -34,8 +34,6 @@
         <Tab text="Courses">
             <GridPane>
                 <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
-                    <TextField fx:id="searchField1" promptText="Search for a course" HBox.hgrow="ALWAYS" />
-                    <Button fx:id="searchButton" text="Search" />
                     <ComboBox fx:id="filterComboBox" promptText="Filter">
                         <items>
                             <FXCollections fx:factory="observableArrayList">

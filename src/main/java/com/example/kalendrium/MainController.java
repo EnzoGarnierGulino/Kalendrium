@@ -72,30 +72,19 @@ public class MainController {
 
     public void initialize() {
 
-        matieres.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                drawSchedule();
-            }
+        matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+            drawSchedule();
         });
-        promotions.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                drawSchedule();
-            }
+        promotions.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+            drawSchedule();
         });
-        types.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                drawSchedule();
-            }
+        salles.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+            drawSchedule();
         });
-        salles.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                drawSchedule();
-            }
+        types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
+            drawSchedule();
         });
+
         File file = new File("images/KalendriumLogo.png");
         if (configManager.isDarkThemeEnabled()) {
             root.getStylesheets().add("https://raw.githubusercontent.com/antoniopelusi/JavaFX-Dark-Theme/main/style.css");
@@ -202,7 +191,7 @@ public class MainController {
 
         List<Cours> memoire = courses;
 
-        List<List<String>> uniqueProperties = CoursUtils.getUniqueCoursProperties(listCoursEnzo);
+        List<List<String>> uniqueProperties = CoursUtils.getUniqueCoursProperties(courses);
         setCheckComboBoxFiltres(uniqueProperties);
         List<String> selectedMatieres = this.matieres.getCheckModel().getCheckedItems();
         List<String> selectedSalles = this.salles.getCheckModel().getCheckedItems();
