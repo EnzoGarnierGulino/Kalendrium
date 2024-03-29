@@ -38,6 +38,21 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -60,7 +75,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.kalendrium/com.example.kalendrium.HelloApplication</mainClass>
+                            <mainClass>com.example.kalendrium.LoginScreen</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="boite" style="-fx-background-color: #468cc7; -fx-background-radius: 3px; -fx-border-color: black;
+-fx-border-width: 2px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label fx:id="heure" text="Label" />
+        <Label fx:id="matiere" text="Label" />
+        <Label fx:id="enseignant" text="Label" />
+        <Label fx:id="td" text="Label" />
+        <Label fx:id="salle" text="Label" />
+        <Label fx:id="type" text="Label" />
+        <Label fx:id="memo" text="Label" />
+    </children>
+</VBox>
