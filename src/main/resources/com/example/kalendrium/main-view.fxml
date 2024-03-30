@@ -43,12 +43,11 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
-                    <Button fx:id="addEventButton" text="Add event"/>
-                    <Button fx:id="settingsButton" text="Settings" onAction="#openSettings"/>
                     <CheckComboBox fx:id="matieres" prefWidth="200"/>
                     <CheckComboBox fx:id="salles" prefWidth="200"/>
                     <CheckComboBox fx:id="promotions" prefWidth="200"/>
                     <CheckComboBox fx:id="types" prefWidth="200"/>
+                    <Button fx:id="addEventButton" text="Add event"/>
                 </HBox>
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10"/>

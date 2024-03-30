@@ -4,28 +4,27 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.controlsfx.control.CheckComboBox;
 import javafx.scene.layout.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import java.io.File;
-import java.io.IOException;
 
 public class MainController {
     @FXML
@@ -48,6 +47,8 @@ public class MainController {
     public CheckComboBox<String> promotions;
     @FXML
     public CheckComboBox<String> types;
+    @FXML
+    public Button addEventButton;
     ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
     private final int NUMBER_OF_ROWS = 24;
@@ -132,6 +133,11 @@ public class MainController {
             }
             columnWidth = root.getWidth() / NUMBER_OF_COLUMNS;
             this.drawSchedule();
+        });
+
+        // Event tracker
+        addEventButton.setOnAction(event -> {
+            openAddEventWindow(mainGridPane);
         });
 
         // Commands tracker
@@ -257,13 +263,6 @@ public class MainController {
         return coursesOnTargetDate;
     }
 
-    public void openSettings() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
-        Parent settingsRoot = fxmlLoader.load();
-        Pane currentRoot = (Pane) root.getScene().getRoot();
-        currentRoot.getChildren().setAll(settingsRoot);
-    }
-
     public void setCheckComboBoxFiltres(List<List<String>> uniqueProperties) {
         if (matieres.getItems().isEmpty()) {
             matieres.getItems().addAll(uniqueProperties.get(0));
@@ -277,6 +276,39 @@ public class MainController {
         if (types.getItems().isEmpty()) {
             types.getItems().addAll(uniqueProperties.get(3));
         }
+    }
+
+    public void openAddEventWindow(GridPane mainGridPane) {
+        mainGridPane.getChildren().clear();
+
+        Label startHourLabel = new Label("Start Hour:");
+        TextField startHourField = new TextField();
+        mainGridPane.addRow(0, startHourLabel, startHourField);
+
+        Label endHourLabel = new Label("End Hour:");
+        TextField endHourField = new TextField();
+        mainGridPane.addRow(2, endHourLabel, endHourField);
+
+        Label colorLabel = new Label("Color:");
+        ColorPicker colorPicker = new ColorPicker();
+        mainGridPane.addRow(4, colorLabel, colorPicker);
+
+        Label nameLabel = new Label("Name:");
+        TextField nameField = new TextField();
+        mainGridPane.addRow(6, nameLabel, nameField);
+
+        Label descriptionLabel = new Label("Description:");
+        TextArea descriptionArea = new TextArea();
+        mainGridPane.addRow(8, descriptionLabel, descriptionArea);
+
+        Button addButton = new Button("Add");
+        addButton.setOnAction(event -> {
+            // Event logic action here
+            mainGridPane.getChildren().clear();
+            startDate.set(2024, Calendar.MARCH, 18);
+            drawSchedule();
+        });
+        mainGridPane.addRow(10, addButton);
     }
 
     // CTRL + T to switch theme
