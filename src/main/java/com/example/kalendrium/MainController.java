@@ -242,6 +242,11 @@ public class MainController {
                         cours.getEnseignant(), cours.getTd(), cours.getPromotion(), cours.getSalle(),
                         cours.getMemo(), cours.getType(), cours.getSummary());
 
+                // TODO: Send email with teacher's name
+                eventBox.setOnMouseClicked(event -> {
+                    System.out.println("Teacher's name: " + cours.getEnseignant());
+                });
+
                 eventBox.boite.setMinHeight(0);
                 eventBox.boite.prefHeightProperty().bind(Bindings.multiply(Bindings.divide(mainGridPane.heightProperty(), NUMBER_OF_ROWS - 1), span));
                 eventBox.boite.prefWidthProperty().bind(Bindings.createDoubleBinding(() -> columnWidth, root.widthProperty()));
@@ -303,7 +308,7 @@ public class MainController {
 
         Button addButton = new Button("Add");
         addButton.setOnAction(event -> {
-            // Event logic action here
+            // TODO: Create event with the given information
             mainGridPane.getChildren().clear();
             startDate.set(2024, Calendar.MARCH, 18);
             drawSchedule();
