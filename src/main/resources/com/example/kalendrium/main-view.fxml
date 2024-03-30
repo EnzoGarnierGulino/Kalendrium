@@ -33,7 +33,9 @@
              GridPane.columnSpan="3" GridPane.rowSpan="3">
         <Tab text="Courses">
             <GridPane>
-                <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS" style="-fx-padding: 0 0 10 0;">
+                <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS"
+                      style="-fx-padding: 0 0 10 0;" alignment="CENTER">
+                    <ComboBox fx:id="courseComboBox" promptText="Select a course"/>
                     <ComboBox fx:id="filterComboBox" promptText="Filter">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
@@ -55,14 +57,13 @@
                 <GridPane fx:id="mainGridPane" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
             </GridPane>
         </Tab>
-<!--        TODO: The two other tabs -->
-<!--        <Tab text="Rooms">-->
-<!--            <GridPane>-->
-<!--                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"-->
-<!--                           GridPane.columnIndex="0"/>-->
-<!--            </GridPane>-->
-<!--        </Tab>-->
-<!--        <Tab text="User">-->
+        <Tab text="Rooms">
+            <GridPane>
+                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"
+                           GridPane.columnIndex="0"/>
+            </GridPane>
+        </Tab>
+<!--        <Tab text="Users">-->
 <!--            <GridPane>-->
 <!--                <TextField fx:id="searchField3" promptText="Search for an user" GridPane.rowIndex="0"-->
 <!--                           GridPane.columnIndex="0"/>-->

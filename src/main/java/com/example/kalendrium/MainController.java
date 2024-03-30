@@ -1,13 +1,13 @@
 package com.example.kalendrium;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,9 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.controlsfx.control.CheckComboBox;
 import javafx.scene.layout.*;
 import java.text.SimpleDateFormat;
@@ -38,6 +35,8 @@ public class MainController {
     @FXML
     public GridPane mainGridPane;
     @FXML
+    public ComboBox<String> courseComboBox;
+    @FXML
     private ComboBox<String> filterComboBox;
     @FXML
     public CheckComboBox<String> matieres;
@@ -51,26 +50,28 @@ public class MainController {
     public Button addEventButton;
     ConfigurationManager configManager = new ConfigurationManager();
     private final int TAB_MARGIN = 19;
-    private final int NUMBER_OF_ROWS = 24;
+    private final int NUMBER_OF_ROWS = 25;
     private int NUMBER_OF_COLUMNS = 5;
     private int numberOfDaysToGoAfter = 2;
     private int numberOfDaysToGoBefore = -12;
     private double columnWidth = (double) 640 / NUMBER_OF_COLUMNS;
     private final Calendar startDate = Calendar.getInstance();
+    private String schedulePath = "";
 
     public void initialize() {
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule();
+            drawSchedule(schedulePath);
         });
         promotions.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule();
+            drawSchedule(schedulePath);
         });
         salles.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule();
+            drawSchedule(schedulePath);
         });
         types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule();
+            drawSchedule(schedulePath);
         });
+        populateComboBox(tabPane.getSelectionModel().getSelectedItem().getText());
 
         File file = new File("images/KalendriumLogo.png");
         if (configManager.isDarkThemeEnabled()) {
@@ -106,6 +107,17 @@ public class MainController {
             mainGridPane.setMinHeight(0);
         });
 
+        // Schedule tracker
+        courseComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                schedulePath = "schedules/" + tabPane.getSelectionModel().getSelectedItem().getText().toLowerCase() +
+                        "/" + newValue + ".ics";
+                filterComboBox.setValue("Week");
+                startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                drawSchedule(schedulePath);
+            }
+        });
+
         // Filter tracker
         filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
@@ -131,8 +143,9 @@ public class MainController {
                     initializeColumns();
                 }
             }
+
             columnWidth = root.getWidth() / NUMBER_OF_COLUMNS;
-            this.drawSchedule();
+            this.drawSchedule(schedulePath);
         });
 
         // Event tracker
@@ -143,21 +156,22 @@ public class MainController {
         // Commands tracker
         Platform.runLater(() -> {
             root.getScene().setOnKeyPressed(e -> {
-                if (e.isControlDown() && e.getCode() == KeyCode.T) {
-                    switchTheme();
-                }
-            });
-            root.getScene().setOnKeyPressed(e -> {
                 if (e.getCode() == KeyCode.KP_LEFT || e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.L ) {
                     updateDate(numberOfDaysToGoBefore);
                 }
                 if (e.getCode() == KeyCode.KP_RIGHT || e.getCode() == KeyCode.RIGHT || e.getCode() == KeyCode.R ) {
                     updateDate(numberOfDaysToGoAfter);
                 }
+                if (e.isControlDown() && e.getCode() == KeyCode.T) {
+                    switchTheme();
+                }
             });
         });
+
+        schedulePath = "schedules/" + tabPane.getSelectionModel().getSelectedItem().getText().toLowerCase()
+                + "/" + courseComboBox.getValue() + ".ics";
         startDate.set(2024, Calendar.MARCH, 18);
-        this.drawSchedule();
+        this.drawSchedule(schedulePath);
     }
 
     public void initializeColumns() {
@@ -170,15 +184,36 @@ public class MainController {
         }
     }
 
-    public void updateDate(int amount) {
-        startDate.add(Calendar.DAY_OF_MONTH, amount);
-        this.drawSchedule();
+    public void populateComboBox(String id) {
+        File folder = new File("schedules/" + id.toLowerCase());
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                ObservableList<String> filenames = FXCollections.observableArrayList();
+                for (File file : files) {
+                    if (file.isFile()) {
+                        String name = file.getName();
+                        name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+                        filenames.add(name.replace(".ics", ""));
+                    }
+                }
+                courseComboBox.setItems(filenames);
+                if (!filenames.isEmpty()) {
+                    courseComboBox.setValue(filenames.get(0));
+                }
+            }
+        }
     }
 
-    public void drawSchedule() {
+    public void updateDate(int amount) {
+        startDate.add(Calendar.DAY_OF_MONTH, amount);
+        this.drawSchedule(schedulePath);
+    }
+
+    public void drawSchedule(String schedulePath) {
         mainGridPane.getChildren().clear();
         IcsParser parser = new IcsParser();
-        List<Cours> courses = parser.parseICSFile("schedules/users/enzo.ics");
+        List<Cours> courses = parser.parseICSFile(schedulePath);
 
         List<List<String>> uniqueProperties = CoursUtils.getUniqueCoursProperties(courses);
         setCheckComboBoxFiltres(uniqueProperties);
@@ -311,7 +346,7 @@ public class MainController {
             // TODO: Create event with the given information
             mainGridPane.getChildren().clear();
             startDate.set(2024, Calendar.MARCH, 18);
-            drawSchedule();
+            drawSchedule(schedulePath);
         });
         mainGridPane.addRow(10, addButton);
     }
