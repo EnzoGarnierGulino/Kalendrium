@@ -27,11 +27,11 @@ public class MainController {
     @FXML
     private ImageView logo;
     @FXML
-    private TabPane tabPane;
-    @FXML
     private GridPane root;
     @FXML
     public GridPane mainGridPane;
+    @FXML
+    public ComboBox<String> mode;
     @FXML
     public ComboBox<String> courseComboBox;
     @FXML
@@ -69,7 +69,6 @@ public class MainController {
         types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
             drawSchedule(schedulePath);
         });
-        populateComboBox(tabPane.getSelectionModel().getSelectedItem().getText());
 
         File file = new File("images/KalendriumLogo.png");
         if (configManager.isDarkThemeEnabled()) {
@@ -77,8 +76,6 @@ public class MainController {
         }
         Image image = new Image(file.toURI().toString());
         logo.setImage(image);
-        tabPane.setTabMaxHeight(40);
-        tabPane.setTabMinHeight(40);
         filterComboBox.setValue("Week");
 
         for (int j = 0; j < NUMBER_OF_ROWS; j++) {
@@ -91,8 +88,6 @@ public class MainController {
         // Width tracker
         root.widthProperty().addListener((observable, oldValue, newValue) -> {
             double newTabWidth = newValue.doubleValue() / 3 - TAB_MARGIN;
-            tabPane.setTabMinWidth(newTabWidth);
-            tabPane.setTabMaxWidth(newTabWidth);
             double newRectangleWidth = newValue.doubleValue();
             mainGridPane.setPrefWidth(newRectangleWidth);
             columnWidth = root.getWidth() / NUMBER_OF_COLUMNS;
@@ -105,21 +100,22 @@ public class MainController {
             mainGridPane.setMinHeight(0);
         });
 
-        // Tab tracker
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            mainGridPane.getChildren().clear();
-            populateComboBox(newValue.getText());
-            courseComboBox.setValue(courseComboBox.getItems().get(0));
-            schedulePath = "schedules/" + newValue.getText().toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
+        // Mode tracker
+        mode.valueProperty().addListener((observable, oldValue, newValue) -> {
+            populateComboBox(newValue);
+            schedulePath = "schedules/" + newValue.toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
             filterComboBox.setValue("Week");
             startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             drawSchedule(schedulePath);
         });
 
+        mode.setValue("Courses");
+        populateComboBox(mode.getValue());
+
         // Schedule tracker
         courseComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                schedulePath = "schedules/" + tabPane.getSelectionModel().getSelectedItem().getText().toLowerCase() +
+                schedulePath = "schedules/" + mode.getValue().toLowerCase() +
                         "/" + newValue + ".ics";
                 filterComboBox.setValue("Week");
                 startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -177,7 +173,7 @@ public class MainController {
             });
         });
 
-        schedulePath = "schedules/" + tabPane.getSelectionModel().getSelectedItem().getText().toLowerCase()
+        schedulePath = "schedules/" + mode.getValue().toLowerCase()
                 + "/" + courseComboBox.getValue() + ".ics";
         startDate.set(2024, Calendar.MARCH, 18);
         this.drawSchedule(schedulePath);

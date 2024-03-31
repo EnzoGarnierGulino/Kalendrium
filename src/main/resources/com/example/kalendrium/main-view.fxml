@@ -10,11 +10,12 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 <?import org.controlsfx.control.CheckComboBox?>
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0"
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+          prefHeight="480.0"
           prefWidth="640.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.example.kalendrium.MainController">
     <stylesheets>
-        <URL value="@styles.css" />
+        <URL value="@styles.css"/>
     </stylesheets>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -29,39 +30,38 @@
     </rowConstraints>
     <ImageView fx:id="logo" fitHeight="158.0" fitWidth="212.0" pickOnBounds="true" preserveRatio="true"
                GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0"/>
-    <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="317.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1"
-             GridPane.columnSpan="3" GridPane.rowSpan="3">
-        <Tab text="Courses">
-            <GridPane>
-                <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS"
-                      style="-fx-padding: 0 0 10 0;" alignment="CENTER">
-                    <ComboBox fx:id="courseComboBox" promptText="Select a course"/>
-                    <ComboBox fx:id="filterComboBox" promptText="Filter">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Day" />
-                                <String fx:value="Week"  />
-                                <String fx:value="Month" />
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
-                    <CheckComboBox fx:id="matieres" prefWidth="200"/>
-                    <CheckComboBox fx:id="salles" prefWidth="200"/>
-                    <CheckComboBox fx:id="promotions" prefWidth="200"/>
-                    <CheckComboBox fx:id="types" prefWidth="200"/>
-                    <Button fx:id="addEventButton" text="Add event"/>
-                </HBox>
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-                <GridPane fx:id="mainGridPane" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-            </GridPane>
-        </Tab>
-        <Tab text="Rooms">
-
-        </Tab>
-        <Tab text="Users">
-
-        </Tab>
-    </TabPane>
+    <GridPane prefHeight="200.0" prefWidth="317.0" GridPane.rowIndex="1"
+              GridPane.columnSpan="3" GridPane.rowSpan="3">
+        <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.hgrow="ALWAYS"
+              style="-fx-padding: 0 0 10 0;" alignment="CENTER">
+            <ComboBox fx:id="mode" promptText="Schedule">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Courses"/>
+                        <String fx:value="Rooms"/>
+                        <String fx:value="Users"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <ComboBox fx:id="courseComboBox" promptText="Select a course"/>
+            <ComboBox fx:id="filterComboBox" promptText="Filter">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Day"/>
+                        <String fx:value="Week"/>
+                        <String fx:value="Month"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <CheckComboBox fx:id="matieres" prefWidth="200"/>
+            <CheckComboBox fx:id="salles" prefWidth="200"/>
+            <CheckComboBox fx:id="promotions" prefWidth="200"/>
+            <CheckComboBox fx:id="types" prefWidth="200"/>
+            <Button fx:id="addEventButton" text="Add event"/>
+        </HBox>
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <GridPane fx:id="mainGridPane" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+    </GridPane>
 </GridPane>
