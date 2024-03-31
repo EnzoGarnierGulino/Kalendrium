@@ -19,24 +19,24 @@ public class EventBox extends Pane implements Initializable {
     @FXML
     protected VBox boite;
     @FXML
-    private Label heure;
+    protected Label heure;
     @FXML
-    private Label matiere;
+    protected Label matiere;
     @FXML
-    private Label enseignant;
+    protected Label enseignant;
     @FXML
-    private Label td;
+    protected Label td;
     @FXML
-    private Label salle;
+    protected Label salle;
     @FXML
-    private Label type;
+    protected Label type;
     @FXML
-    private Label memo;
+    protected Label memo;
 
-    private Calendar dateStart;
-    private Calendar dateEnd;
-    private String promotion;
-    private String summary;
+    protected Calendar dateStart;
+    protected Calendar dateEnd;
+    protected String promotion;
+    protected String summary;
 
 
     @Override
