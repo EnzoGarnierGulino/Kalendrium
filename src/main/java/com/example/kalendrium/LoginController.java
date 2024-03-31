@@ -56,6 +56,7 @@ public class LoginController {
                 if (e.getCode() == KeyCode.ENTER) {
                     handleLogin();
                 }
+                // CTRL + T to switch theme
                 if (e.isControlDown() && e.getCode() == KeyCode.T) {
                     switchTheme();
                 }
@@ -67,6 +68,7 @@ public class LoginController {
                 if (e.getCode() == KeyCode.ENTER) {
                     handleLogin();
                 }
+                // CTRL + T to switch theme
                 if (e.isControlDown() && e.getCode() == KeyCode.T) {
                     switchTheme();
                 }

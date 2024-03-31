@@ -47,7 +47,6 @@ public class MainController {
     @FXML
     public Button addEventButton;
     ConfigurationManager configManager = new ConfigurationManager();
-    private final int TAB_MARGIN = 19;
     private final int NUMBER_OF_ROWS = 25;
     private int NUMBER_OF_COLUMNS = 5;
     private int numberOfDaysToGoAfter = 2;
@@ -56,18 +55,21 @@ public class MainController {
     private final Calendar startDate = Calendar.getInstance();
     private String schedulePath = "";
 
+    // TODO: Change the color of the event boxes (may be too difficult to read)
+    // TODO: Add a column to display some hours corresponding to the rows
     public void initialize() {
+        // TODO: Bug here, the comboboxes aren't actualized when the user changes the mode
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule(schedulePath);
+            resetToMonday();
         });
         promotions.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule(schedulePath);
+            resetToMonday();
         });
         salles.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule(schedulePath);
+            resetToMonday();
         });
         types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            drawSchedule(schedulePath);
+            resetToMonday();
         });
 
         File file = new File("images/KalendriumLogo.png");
@@ -87,7 +89,6 @@ public class MainController {
 
         // Width tracker
         root.widthProperty().addListener((observable, oldValue, newValue) -> {
-            double newTabWidth = newValue.doubleValue() / 3 - TAB_MARGIN;
             double newRectangleWidth = newValue.doubleValue();
             mainGridPane.setPrefWidth(newRectangleWidth);
             columnWidth = root.getWidth() / NUMBER_OF_COLUMNS;
@@ -105,11 +106,10 @@ public class MainController {
             populateComboBox(newValue);
             schedulePath = "schedules/" + newValue.toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
             filterComboBox.setValue("Week");
-            startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            drawSchedule(schedulePath);
+            resetToMonday();
         });
 
-        mode.setValue("Courses");
+        mode.setValue("Users");
         populateComboBox(mode.getValue());
 
         // Schedule tracker
@@ -118,8 +118,7 @@ public class MainController {
                 schedulePath = "schedules/" + mode.getValue().toLowerCase() +
                         "/" + newValue + ".ics";
                 filterComboBox.setValue("Week");
-                startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                drawSchedule(schedulePath);
+                resetToMonday();
             }
         });
 
@@ -167,6 +166,7 @@ public class MainController {
                 if (e.getCode() == KeyCode.KP_RIGHT || e.getCode() == KeyCode.RIGHT || e.getCode() == KeyCode.R ) {
                     updateDate(numberOfDaysToGoAfter);
                 }
+                // CTRL + T to switch theme
                 if (e.isControlDown() && e.getCode() == KeyCode.T) {
                     switchTheme();
                 }
@@ -177,6 +177,11 @@ public class MainController {
                 + "/" + courseComboBox.getValue() + ".ics";
         startDate.set(2024, Calendar.MARCH, 18);
         this.drawSchedule(schedulePath);
+    }
+
+    public void resetToMonday() {
+        startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        drawSchedule(schedulePath);
     }
 
     public void initializeColumns() {
@@ -360,7 +365,7 @@ public class MainController {
         mainGridPane.addRow(10, addButton);
     }
 
-    // CTRL + T to switch theme
+    // T to switch theme
     private void switchTheme() {
         configManager.switchTheme(root);
     }
