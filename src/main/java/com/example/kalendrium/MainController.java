@@ -26,10 +26,8 @@ import java.io.File;
 public class MainController {
     @FXML
     private ImageView logo;
-
     @FXML
     private TabPane tabPane;
-
     @FXML
     private GridPane root;
     @FXML
@@ -105,6 +103,17 @@ public class MainController {
             double newRectangleHeight = newValue.doubleValue();
             mainGridPane.setPrefHeight(newRectangleHeight);
             mainGridPane.setMinHeight(0);
+        });
+
+        // Tab tracker
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            mainGridPane.getChildren().clear();
+            populateComboBox(newValue.getText());
+            courseComboBox.setValue(courseComboBox.getItems().get(0));
+            schedulePath = "schedules/" + newValue.getText().toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
+            filterComboBox.setValue("Week");
+            startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            drawSchedule(schedulePath);
         });
 
         // Schedule tracker
@@ -344,6 +353,10 @@ public class MainController {
         Button addButton = new Button("Add");
         addButton.setOnAction(event -> {
             // TODO: Create event with the given information
+            System.out.println("Start Hour: " + startHourField.getText() + " End Hour: " + endHourField.getText());
+            System.out.println("Color: " + colorPicker.getValue());
+            System.out.println("Name: " + nameField.getText());
+            System.out.println("Description: " + descriptionArea.getText());
             mainGridPane.getChildren().clear();
             startDate.set(2024, Calendar.MARCH, 18);
             drawSchedule(schedulePath);

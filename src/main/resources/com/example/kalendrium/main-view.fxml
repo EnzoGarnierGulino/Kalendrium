@@ -58,16 +58,10 @@
             </GridPane>
         </Tab>
         <Tab text="Rooms">
-            <GridPane>
-                <TextField fx:id="searchField2" promptText="Search for a room" GridPane.rowIndex="0"
-                           GridPane.columnIndex="0"/>
-            </GridPane>
+
         </Tab>
-<!--        <Tab text="Users">-->
-<!--            <GridPane>-->
-<!--                <TextField fx:id="searchField3" promptText="Search for an user" GridPane.rowIndex="0"-->
-<!--                           GridPane.columnIndex="0"/>-->
-<!--            </GridPane>-->
-<!--        </Tab>-->
+        <Tab text="Users">
+
+        </Tab>
     </TabPane>
 </GridPane>
