@@ -16,6 +16,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
 import org.controlsfx.control.CheckComboBox;
 import javafx.scene.layout.*;
 import org.json.simple.JSONObject;
@@ -62,6 +64,7 @@ public class MainController {
     private double columnWidth = (double) 640 / NUMBER_OF_COLUMNS;
     private final Calendar startDate = Calendar.getInstance();
     private String schedulePath = "";
+    private List<Cours> courses = new ArrayList<>();
 
     public void initialize() {
         String id = null;
@@ -83,7 +86,6 @@ public class MainController {
             System.out.println("WTF");
         }
 
-        // TODO: Bug here, the comboboxes aren't actualized when the user changes the mode or the course
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
             resetToMonday();
         });
@@ -131,6 +133,7 @@ public class MainController {
             types.getCheckModel().clearChecks();
             populateComboBox(newValue);
             schedulePath = "schedules/" + newValue.toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
+            setIcs(schedulePath);
             filterComboBox.setValue("Week");
             resetToMonday();
         });
@@ -143,6 +146,7 @@ public class MainController {
             if (newValue != null) {
                 schedulePath = "schedules/" + mode.getValue().toLowerCase() +
                         "/" + newValue + ".ics";
+                setIcs(schedulePath);
                 filterComboBox.setValue("Week");
                 resetToMonday();
             }
@@ -204,6 +208,7 @@ public class MainController {
 
         schedulePath = "schedules/" + mode.getValue().toLowerCase()
                 + "/" + courseComboBox.getValue() + ".ics";
+        setIcs(schedulePath);
         startDate.set(2024, Calendar.APRIL, 1);
         this.drawSchedule(schedulePath);
     }
@@ -249,22 +254,26 @@ public class MainController {
         this.drawSchedule(schedulePath);
     }
 
-    public void drawSchedule(String schedulePath) {
-        mainGridPane.getChildren().clear();
+    public void setIcs(String schedulePath) {
         IcsParser parser = new IcsParser();
-        List<Cours> courses = parser.parseICSFile(schedulePath);
+        courses = parser.parseICSFile(schedulePath);
 
         List<List<String>> uniqueProperties = CoursUtils.getUniqueCoursProperties(courses);
         setCheckComboBoxFiltres(uniqueProperties);
+    }
+
+    public void drawSchedule(String schedulePath) {
+        mainGridPane.getChildren().clear();
         List<String> selectedMatieres = this.matieres.getCheckModel().getCheckedItems();
         List<String> selectedSalles = this.salles.getCheckModel().getCheckedItems();
         List<String> selectedPromotions = this.promotions.getCheckModel().getCheckedItems();
         List<String> selectedTypes = this.types.getCheckModel().getCheckedItems();
 
-        courses = CoursFilter.filterCours(courses, selectedMatieres, selectedSalles, selectedPromotions, selectedTypes);
+        List<Cours> coursesToDisplay = CoursFilter.filterCours(courses, selectedMatieres, selectedSalles, selectedPromotions, selectedTypes);
+
 
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
-            List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(courses, startDate.get(Calendar.DAY_OF_MONTH),
+            List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(coursesToDisplay, startDate.get(Calendar.DAY_OF_MONTH),
                     startDate.get(Calendar.MONTH), startDate.get(Calendar.YEAR));
             coursesOnTargetDate.sort(Comparator.comparing(c -> c.getDateStart().getTime()));
 
@@ -297,7 +306,7 @@ public class MainController {
             mainGridPane.add(container, i, 0);
 
             for (Cours cours : coursesOnTargetDate) {
-                if (coursesOnTargetDate.size() == 0) {
+                if (coursesOnTargetDate.isEmpty()) {
                     continue;
                 }
                 int startHour = cours.getDateStart().get(Calendar.HOUR_OF_DAY);
@@ -314,11 +323,10 @@ public class MainController {
                 EventBox eventBox = new EventBox();
                 eventBox.setEventDetails(cours.getDateStart(), cours.getDateEnd(), cours.getMatiere(),
                         cours.getEnseignant(), cours.getTd(), cours.getPromotion(), cours.getSalle(),
-                        cours.getMemo(), cours.getType(), cours.getSummary());
+                        cours.getMemo(), cours.getType(), cours.getSummary(), cours.getColor());
 
-                // TODO: Send email with teacher's name
                 eventBox.setOnMouseClicked(event -> {
-                    System.out.println("Teacher's name: " + cours.getEnseignant());
+                    EmailSender.sendEmail(cours.getEnseignant());
                 });
 
                 eventBox.boite.setMinHeight(0);
@@ -343,18 +351,14 @@ public class MainController {
     }
 
     public void setCheckComboBoxFiltres(List<List<String>> uniqueProperties) {
-        if (matieres.getItems().isEmpty()) {
+            matieres.getItems().clear();
             matieres.getItems().addAll(uniqueProperties.get(0));
-        }
-        if (salles.getItems().isEmpty()) {
+            salles.getItems().clear();
             salles.getItems().addAll(uniqueProperties.get(1));
-        }
-        if (promotions.getItems().isEmpty()) {
+            promotions.getItems().clear();
             promotions.getItems().addAll(uniqueProperties.get(2));
-        }
-        if (types.getItems().isEmpty()) {
+            types.getItems().clear();
             types.getItems().addAll(uniqueProperties.get(3));
-        }
     }
 
     public void openAddEventWindow(GridPane mainGridPane) {
@@ -378,25 +382,23 @@ public class MainController {
         ColorPicker colorPicker = new ColorPicker();
         mainGridPane.addRow(6, colorLabel, colorPicker);
 
-        Label nameLabel = new Label("Name:");
-        TextArea nameField = new TextArea();
-        mainGridPane.addRow(8, nameLabel, nameField);
-
         Label descriptionLabel = new Label("Description:");
         TextArea descriptionArea = new TextArea();
         mainGridPane.addRow(10, descriptionLabel, descriptionArea);
 
         Button addButton = new Button("Add");
         addButton.setOnAction(event -> {
-            // TODO: Create event with the given information
-            System.out.println("Date: " + datePicker.getValue());
-            System.out.println("Start Hour: " + startHourComboBox.getValue());
-            System.out.println("End Hour: " + endHourComboBox.getValue());
-            System.out.println("Color: " + colorPicker.getValue());
-            System.out.println("Name: " + nameField.getText());
-            System.out.println("Description: " + descriptionArea.getText());
             mainGridPane.getChildren().clear();
             startDate.set(2024, Calendar.APRIL, 1);
+            String[] startHour = startHourComboBox.getValue().split(":");
+            String[] endHour = endHourComboBox.getValue().split(":");
+            String description = "Color : " + colorPicker.getValue().toString().substring(2, 8) + "\n Matière : " + descriptionArea.getText();
+            DateTime dtStart = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(startHour[0]), (startHour.length == 2) ? Integer.parseInt(startHour[1]) : 0);
+            DateTime dtEnd = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(endHour[0]), (endHour.length == 2) ? Integer.parseInt(endHour[1]) : 0);
+            VEvent newEvent = CreateEvent.createEvent(dtStart, dtEnd, "", description, "");
+            //todo use user ics to add this event
+            CreateEvent.addEvent(schedulePath, newEvent);
+            setIcs(schedulePath);
             drawSchedule(schedulePath);
         });
         mainGridPane.addRow(12, addButton);
@@ -419,22 +421,32 @@ public class MainController {
         populateHourComboBox(endHourComboBox);
         mainGridPane.addRow(4, endHourLabel, endHourComboBox);
 
-        // TODO: Get rooms from schedule ?
+        Label descriptionLabel = new Label("Description:");
+        TextArea descriptionArea = new TextArea();
+        mainGridPane.addRow(7, descriptionLabel, descriptionArea);
+
         Label roomLabel = new Label("Room:");
-        TextField room = new TextField();
-        mainGridPane.addRow(6, roomLabel, room);
+        ComboBox<String> roomComboBox = new ComboBox<>();
+        roomComboBox.getItems().add("Stat 6 = Info - C 129");
+        roomComboBox.getItems().add("Amphi Blaise");
+        roomComboBox.getItems().add("S1 = C 042 Nodes");
+        mainGridPane.addRow(10, roomLabel, roomComboBox);
 
         Button addButton = new Button("Book");
         addButton.setOnAction(event -> {
-            // TODO: Book a room with the given information
-            System.out.println("Date: " + datePicker.getValue());
-            System.out.println("Start Hour: " + startHourComboBox.getValue() + " End Hour: " + endHourComboBox.getValue());
-            System.out.println("Room: " + room.getText());
+            String[] startHour = startHourComboBox.getValue().split(":");
+            String[] endHour = endHourComboBox.getValue().split(":");
+            String description = "Matière : " + descriptionArea.getText();
+            DateTime dtStart = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(startHour[0]), (startHour.length == 2) ? Integer.parseInt(startHour[1]) : 0);
+            DateTime dtEnd = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(endHour[0]), (endHour.length == 2) ? Integer.parseInt(endHour[1]) : 0);
+            VEvent newEvent = CreateEvent.createEvent(dtStart, dtEnd, "", description, roomComboBox.getValue());
+            CreateEvent.addNoneOverlapingEvent("schedules/rooms/" + roomComboBox.getValue() + ".ics", newEvent);
             mainGridPane.getChildren().clear();
             startDate.set(2024, Calendar.APRIL, 1);
+            setIcs(schedulePath);
             drawSchedule(schedulePath);
         });
-        mainGridPane.addRow(10, addButton);
+        mainGridPane.addRow(12, addButton);
     }
 
     private void populateHourComboBox(ComboBox<String> comboBox) {

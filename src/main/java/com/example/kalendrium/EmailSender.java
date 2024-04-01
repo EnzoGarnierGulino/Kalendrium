@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,10 @@ public class EmailSender {
     private static final String DOMAIN = "@univ-avignon.fr";
 
     public static void sendEmail(String name) {
+        if (name == null || name.isEmpty()) {
+            System.out.println("Invalid name. Cannot generate email address.");
+            return;
+        }
         String toEmail = generateEmailAddress(name);
         if (toEmail.isEmpty()) {
             System.out.println("Invalid name format. Cannot generate email address.");

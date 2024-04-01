@@ -15,11 +15,32 @@ public class CoursUtils {
             if (cours.getMatiere() != null && !matieres.contains(cours.getMatiere())) {
                 matieres.add(cours.getMatiere());
             }
-            if (cours.getPromotion() != null && !promotions.contains(cours.getPromotion())) {
-                promotions.add(cours.getPromotion());
+            if (cours.getPromotion() != null) {
+                String[] promotionNames = cours.getPromotion().split(",");
+                for (String promotionName : promotionNames) {
+                    promotionName = promotionName.trim(); // remove leading/trailing whitespace
+                    if (!promotions.contains(promotionName)) {
+                        promotions.add(promotionName);
+                    }
+                }
             }
-            if (cours.getSalle() != null && !salles.contains(cours.getSalle())) {
-                salles.add(cours.getSalle());
+            if (cours.getTd() != null) {
+                String[] promotionNames = cours.getTd().split(",");
+                for (String promotionName : promotionNames) {
+                    promotionName = promotionName.trim(); // remove leading/trailing whitespace
+                    if (!promotions.contains(promotionName)) {
+                        promotions.add(promotionName);
+                    }
+                }
+            }
+            if (cours.getSalle() != null) {
+                String[] salleNames = cours.getSalle().split(",");
+                for (String salle : salleNames) {
+                    salle = salle.trim();
+                    if (!salles.contains(salle)) {
+                        salles.add(salle);
+                    }
+                }
             }
             if (cours.getType() != null && !types.contains(cours.getType())) {
                 types.add(cours.getType());
