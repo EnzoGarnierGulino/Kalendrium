@@ -6,8 +6,11 @@ import javafx.collections.ListChangeListener;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 import org.controlsfx.control.CheckComboBox;
 import javafx.scene.layout.*;
 import org.json.simple.JSONObject;
@@ -54,6 +58,8 @@ public class MainController {
     public Button addEventButton;
     @FXML
     public Button bookButton;
+    @FXML
+    public Button logoutButton;
     ConfigurationManager configManager = new ConfigurationManager();
     private final int NUMBER_OF_ROWS = 25;
     private int NUMBER_OF_COLUMNS = 5;
@@ -69,18 +75,13 @@ public class MainController {
             JSONParser parser = new JSONParser();
             JSONObject currentUserJson = (JSONObject) parser.parse(reader);
             id = (String) currentUserJson.get("currentUserId");
-            System.out.println("Current User ID: " + id);
         } catch (IOException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
-        System.out.println("ID: " + id);
-
         if (!Objects.equals(id, null)) {
             if (!configManager.isAdmin(id)) {
                 bookButton.setVisible(false);
             }
-        } else {
-            System.out.println("WTF");
         }
 
         // TODO: Bug here, the comboboxes aren't actualized when the user changes the mode or the course
@@ -185,15 +186,24 @@ public class MainController {
         bookButton.setOnAction(event -> {
             openBookEventWindow(mainGridPane);
         });
+        logoutButton.setOnAction(event -> {
+            logout();
+        });
 
         // Commands tracker
         Platform.runLater(() -> {
             root.getScene().setOnKeyPressed(e -> {
+                // → to go to the next day / week / month
                 if (e.getCode() == KeyCode.KP_LEFT || e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.L ) {
                     updateDate(numberOfDaysToGoBefore);
                 }
+                // ← to go to the previous day / week / month
                 if (e.getCode() == KeyCode.KP_RIGHT || e.getCode() == KeyCode.RIGHT || e.getCode() == KeyCode.R ) {
                     updateDate(numberOfDaysToGoAfter);
+                }
+                // Backspace to logout
+                if (e.getCode() == KeyCode.BACK_SPACE) {
+                    logout();
                 }
                 // CTRL + T to switch theme
                 if (e.isControlDown() && e.getCode() == KeyCode.T) {
@@ -211,6 +221,25 @@ public class MainController {
     public void resetToMonday() {
         startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         drawSchedule(schedulePath);
+    }
+
+    public void logout() {
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        stage.close();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("login.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage mainStage = new Stage();
+            mainStage.setTitle("Kalendrium");
+            mainStage.setScene(new Scene(root));
+            mainStage.setResizable(false);
+            mainStage.setWidth(400);
+            mainStage.setHeight(340);
+            mainStage.getIcons().add(new Image("file:images/K.png"));
+            mainStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void initializeColumns() {

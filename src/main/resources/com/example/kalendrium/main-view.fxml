@@ -58,6 +58,7 @@
             <CheckComboBox fx:id="types" prefWidth="200"/>
             <Button fx:id="addEventButton" text="Add event"/>
             <Button fx:id="bookButton" text="Book a room"/>
+            <Button fx:id="logoutButton" text="Logout"/>
         </HBox>
         <padding>
             <Insets top="10" right="10" bottom="10" left="10"/>
