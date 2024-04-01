@@ -18,7 +18,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import org.controlsfx.control.CheckComboBox;
 import javafx.scene.layout.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import java.io.File;
@@ -46,6 +52,8 @@ public class MainController {
     public CheckComboBox<String> types;
     @FXML
     public Button addEventButton;
+    @FXML
+    public Button bookButton;
     ConfigurationManager configManager = new ConfigurationManager();
     private final int NUMBER_OF_ROWS = 25;
     private int NUMBER_OF_COLUMNS = 5;
@@ -55,10 +63,27 @@ public class MainController {
     private final Calendar startDate = Calendar.getInstance();
     private String schedulePath = "";
 
-    // TODO: Change the color of the event boxes (may be too difficult to read)
-    // TODO: Add a column to display some hours corresponding to the rows
     public void initialize() {
-        // TODO: Bug here, the comboboxes aren't actualized when the user changes the mode
+        String id = null;
+        try (FileReader reader = new FileReader("db/currentUser.json")) {
+            JSONParser parser = new JSONParser();
+            JSONObject currentUserJson = (JSONObject) parser.parse(reader);
+            id = (String) currentUserJson.get("currentUserId");
+            System.out.println("Current User ID: " + id);
+        } catch (IOException | org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("ID: " + id);
+
+        if (!Objects.equals(id, null)) {
+            if (!configManager.isAdmin(id)) {
+                bookButton.setVisible(false);
+            }
+        } else {
+            System.out.println("WTF");
+        }
+
+        // TODO: Bug here, the comboboxes aren't actualized when the user changes the mode or the course
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
             resetToMonday();
         });
@@ -73,9 +98,6 @@ public class MainController {
         });
 
         File file = new File("images/KalendriumLogo.png");
-        if (configManager.isDarkThemeEnabled()) {
-            root.getStylesheets().add("https://raw.githubusercontent.com/antoniopelusi/JavaFX-Dark-Theme/main/style.css");
-        }
         Image image = new Image(file.toURI().toString());
         logo.setImage(image);
         filterComboBox.setValue("Week");
@@ -103,6 +125,10 @@ public class MainController {
 
         // Mode tracker
         mode.valueProperty().addListener((observable, oldValue, newValue) -> {
+            matieres.getCheckModel().clearChecks();
+            salles.getCheckModel().clearChecks();
+            promotions.getCheckModel().clearChecks();
+            types.getCheckModel().clearChecks();
             populateComboBox(newValue);
             schedulePath = "schedules/" + newValue.toLowerCase() + "/" + courseComboBox.getValue() + ".ics";
             filterComboBox.setValue("Week");
@@ -152,9 +178,12 @@ public class MainController {
             this.drawSchedule(schedulePath);
         });
 
-        // Event tracker
+        // Buttons tracker
         addEventButton.setOnAction(event -> {
             openAddEventWindow(mainGridPane);
+        });
+        bookButton.setOnAction(event -> {
+            openBookEventWindow(mainGridPane);
         });
 
         // Commands tracker
@@ -175,7 +204,7 @@ public class MainController {
 
         schedulePath = "schedules/" + mode.getValue().toLowerCase()
                 + "/" + courseComboBox.getValue() + ".ics";
-        startDate.set(2024, Calendar.MARCH, 18);
+        startDate.set(2024, Calendar.APRIL, 1);
         this.drawSchedule(schedulePath);
     }
 
@@ -331,54 +360,108 @@ public class MainController {
     public void openAddEventWindow(GridPane mainGridPane) {
         mainGridPane.getChildren().clear();
 
+        Label dateLabel = new Label("Date:");
+        DatePicker datePicker = new DatePicker(LocalDate.now());
+        mainGridPane.addRow(0, dateLabel, datePicker);
+
         Label startHourLabel = new Label("Start Hour:");
-        TextField startHourField = new TextField();
-        mainGridPane.addRow(0, startHourLabel, startHourField);
+        ComboBox<String> startHourComboBox = new ComboBox<>();
+        populateHourComboBox(startHourComboBox);
+        mainGridPane.addRow(2, startHourLabel, startHourComboBox);
 
         Label endHourLabel = new Label("End Hour:");
-        TextField endHourField = new TextField();
-        mainGridPane.addRow(2, endHourLabel, endHourField);
+        ComboBox<String> endHourComboBox = new ComboBox<>();
+        populateHourComboBox(endHourComboBox);
+        mainGridPane.addRow(4, endHourLabel, endHourComboBox);
 
         Label colorLabel = new Label("Color:");
         ColorPicker colorPicker = new ColorPicker();
-        mainGridPane.addRow(4, colorLabel, colorPicker);
+        mainGridPane.addRow(6, colorLabel, colorPicker);
 
         Label nameLabel = new Label("Name:");
-        TextField nameField = new TextField();
-        mainGridPane.addRow(6, nameLabel, nameField);
+        TextArea nameField = new TextArea();
+        mainGridPane.addRow(8, nameLabel, nameField);
 
         Label descriptionLabel = new Label("Description:");
         TextArea descriptionArea = new TextArea();
-        mainGridPane.addRow(8, descriptionLabel, descriptionArea);
+        mainGridPane.addRow(10, descriptionLabel, descriptionArea);
 
         Button addButton = new Button("Add");
         addButton.setOnAction(event -> {
             // TODO: Create event with the given information
-            System.out.println("Start Hour: " + startHourField.getText() + " End Hour: " + endHourField.getText());
+            System.out.println("Date: " + datePicker.getValue());
+            System.out.println("Start Hour: " + startHourComboBox.getValue());
+            System.out.println("End Hour: " + endHourComboBox.getValue());
             System.out.println("Color: " + colorPicker.getValue());
             System.out.println("Name: " + nameField.getText());
             System.out.println("Description: " + descriptionArea.getText());
             mainGridPane.getChildren().clear();
-            startDate.set(2024, Calendar.MARCH, 18);
+            startDate.set(2024, Calendar.APRIL, 1);
+            drawSchedule(schedulePath);
+        });
+        mainGridPane.addRow(12, addButton);
+    }
+
+    public void openBookEventWindow(GridPane mainGridPane) {
+        mainGridPane.getChildren().clear();
+
+        Label dateLabel = new Label("Date:");
+        DatePicker datePicker = new DatePicker(LocalDate.now());
+        mainGridPane.addRow(0, dateLabel, datePicker);
+
+        Label startHourLabel = new Label("Start Hour:");
+        ComboBox<String> startHourComboBox = new ComboBox<>();
+        populateHourComboBox(startHourComboBox);
+        mainGridPane.addRow(2, startHourLabel, startHourComboBox);
+
+        Label endHourLabel = new Label("End Hour:");
+        ComboBox<String> endHourComboBox = new ComboBox<>();
+        populateHourComboBox(endHourComboBox);
+        mainGridPane.addRow(4, endHourLabel, endHourComboBox);
+
+        // TODO: Get rooms from schedule ?
+        Label roomLabel = new Label("Room:");
+        TextField room = new TextField();
+        mainGridPane.addRow(6, roomLabel, room);
+
+        Button addButton = new Button("Book");
+        addButton.setOnAction(event -> {
+            // TODO: Book a room with the given information
+            System.out.println("Date: " + datePicker.getValue());
+            System.out.println("Start Hour: " + startHourComboBox.getValue() + " End Hour: " + endHourComboBox.getValue());
+            System.out.println("Room: " + room.getText());
+            mainGridPane.getChildren().clear();
+            startDate.set(2024, Calendar.APRIL, 1);
             drawSchedule(schedulePath);
         });
         mainGridPane.addRow(10, addButton);
     }
 
-    // T to switch theme
+    private void populateHourComboBox(ComboBox<String> comboBox) {
+        List<String> hours = new ArrayList<>();
+        for (int hour = 8; hour <= 20; hour++) {
+            hours.add(String.valueOf(hour));
+            hours.add(hour + ":30");
+        }
+        ObservableList<String> hourOptions = FXCollections.observableArrayList(hours);
+        comboBox.setItems(hourOptions);
+        comboBox.getSelectionModel().select(0);
+    }
+
+    // CTRL + T to switch theme
     private void switchTheme() {
         configManager.switchTheme(root);
     }
 
     private static List<List<List<Cours>>> getLists(List<Cours> coursByDate) {
-        List<List<List<Cours>>> LALIST = new ArrayList<>();
+        List<List<List<Cours>>> finalList = new ArrayList<>();
         Calendar latestCours = coursByDate.get(0).getDateStart();
         boolean coursNotPlaced = true;
         for (Cours cours : coursByDate) {
             if (latestCours.before(cours.getDateStart()) || latestCours.equals(cours.getDateStart())) {
-                LALIST.add(new ArrayList<>());
+                finalList.add(new ArrayList<>());
             }
-            List<List<Cours>> latestBlock = LALIST.get(LALIST.size()-1);
+            List<List<Cours>> latestBlock = finalList.get(finalList.size()-1);
             if (latestBlock.isEmpty()) {
                 latestBlock.add(new ArrayList<>());
                 latestBlock.get(0).add(cours);
@@ -406,6 +489,6 @@ public class MainController {
                 coursNotPlaced = true;
             }
         }
-        return LALIST;
+        return finalList;
     }
 }
