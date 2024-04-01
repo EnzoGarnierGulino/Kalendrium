@@ -19,24 +19,24 @@ public class EventBox extends Pane implements Initializable {
     @FXML
     protected VBox boite;
     @FXML
-    private Label heure;
+    protected Label heure;
     @FXML
-    private Label matiere;
+    protected Label matiere;
     @FXML
-    private Label enseignant;
+    protected Label enseignant;
     @FXML
-    private Label td;
+    protected Label td;
     @FXML
-    private Label salle;
+    protected Label salle;
     @FXML
-    private Label type;
+    protected Label type;
     @FXML
-    private Label memo;
+    protected Label memo;
 
-    private Calendar dateStart;
-    private Calendar dateEnd;
-    private String promotion;
-    private String summary;
+    protected Calendar dateStart;
+    protected Calendar dateEnd;
+    protected String promotion;
+    protected String summary;
 
 
     @Override
@@ -74,7 +74,7 @@ public class EventBox extends Pane implements Initializable {
         this.type.setWrapText(true);
     }
 
-    public void setEventDetails(Calendar dateStart, Calendar dateEnd, String matiere, String enseignant, String td, String promotion, String salle, String memo, String type, String summary) {
+    public void setEventDetails(Calendar dateStart, Calendar dateEnd, String matiere, String enseignant, String td, String promotion, String salle, String memo, String type, String summary, String color) {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.promotion = promotion;
@@ -98,6 +98,10 @@ public class EventBox extends Pane implements Initializable {
                 boite.setStyle("-fx-background-color: #c53e3e; -fx-background-radius: 3px;\n" +
                         "-fx-border-color: black; -fx-border-width: 2px;");
             }
+        }
+        if (color != null && !color.isEmpty()) {
+            boite.setStyle("-fx-background-color: #" + color + "; -fx-background-radius: 3px;\n" +
+                    "-fx-border-color: black; -fx-border-width: 2px;");
         }
     }
 }

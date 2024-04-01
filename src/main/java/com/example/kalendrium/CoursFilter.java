@@ -9,8 +9,46 @@ public class CoursFilter {
 
         for (Cours cours : coursList) {
             boolean isMatiereValid = matieres == null || matieres.isEmpty() || matieres.contains(cours.getMatiere());
-            boolean isPromotionValid = promotions == null || promotions.isEmpty() || promotions.contains(cours.getPromotion());
-            boolean isSalleValid = salles == null || salles.isEmpty() || salles.contains(cours.getSalle());
+            boolean isPromotionValid = false;
+            if (promotions != null && !promotions.isEmpty()) {
+                if (cours.getPromotion() != null) {
+                    String[] promotionNames = cours.getPromotion().split(",");
+                    for (String promotionName : promotionNames) {
+                        promotionName = promotionName.trim();
+                        if (promotions.contains(promotionName)) {
+                            isPromotionValid = true;
+                            break;
+                        }
+                    }
+                }
+                if (cours.getTd() != null) {
+                    String[] promotionNames = cours.getTd().split(",");
+                    for (String promotionName : promotionNames) {
+                        promotionName = promotionName.trim();
+                        if (promotions.contains(promotionName)) {
+                            isPromotionValid = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+               isPromotionValid = true;
+            }
+            boolean isSalleValid = false;
+            if (salles != null && !salles.isEmpty()) {
+               if (cours.getSalle() != null) {
+                   String[] salleNames = cours.getSalle().split(",");
+                   for (String salleName : salleNames) {
+                       salleName = salleName.trim();
+                       if (salles.contains(salleName)) {
+                           isSalleValid = true;
+                           break;
+                       }
+                   }
+               }
+            } else {
+               isSalleValid = true;
+            }
             boolean isTypeValid = types == null || types.isEmpty() || types.contains(cours.getType());
 
             if (isMatiereValid && isPromotionValid && isSalleValid && isTypeValid) {
