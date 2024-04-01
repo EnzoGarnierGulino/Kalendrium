@@ -68,10 +68,11 @@ public class IcsParser {
 		cours.setEnseignant(detailsMap.get("Enseignant"));
 		cours.setTd(detailsMap.get("TD"));
 		cours.setPromotion(detailsMap.get("Promotion"));
-		cours.setSalle(detailsMap.get("Salle"));
+		cours.setSalle(vEvent.getLocation() != null ? vEvent.getLocation().getValue() : null);
 		cours.setType(detailsMap.get("Type"));
 		cours.setMemo(detailsMap.get("Mémo"));
 		cours.setSummary(summary != null ? summary.getValue() : "");
+		cours.setColor(detailsMap.get("Color"));
 
 		return cours;
 	}

@@ -15,6 +15,7 @@ public class Cours {
     private String memo;
     private String type;
     private String summary;
+    private String color;
 
     public Cours() {
         this.dateStart = null;
@@ -26,6 +27,7 @@ public class Cours {
         this.salle = null;
         this.memo = null;
         this.type = null;
+        this.color = null;
     }
 
     public Calendar getDateStart() {
@@ -106,6 +108,14 @@ public class Cours {
     
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     @Override
