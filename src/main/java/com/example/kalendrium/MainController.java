@@ -87,24 +87,16 @@ public class MainController {
             }
         }
 
-        // Handle darkTheme persistance
+        // Handle darkTheme persistence
         if (configManager.isDarkModeEnabled(id)) {
             configManager.setDarkTheme(root);
         }
 
         // Handle comboCheckboxes
-        matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            resetToMonday();
-        });
-        promotions.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            resetToMonday();
-        });
-        salles.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            resetToMonday();
-        });
-        types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
-            resetToMonday();
-        });
+        matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> resetToMonday());
+        promotions.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> resetToMonday());
+        salles.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> resetToMonday());
+        types.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> resetToMonday());
 
         File file = new File("images/KalendriumLogo.png");
         Image image = new Image(file.toURI().toString());
@@ -177,7 +169,7 @@ public class MainController {
                     initializeColumns();
                 }
                 case "Month" -> {
-                    NUMBER_OF_COLUMNS = startDate.get(Calendar.DAY_OF_MONTH);
+                    NUMBER_OF_COLUMNS = 30;
                     numberOfDaysToGoAfter = 0;
                     numberOfDaysToGoBefore = startDate.get(Calendar.DAY_OF_MONTH) * -1 - startDate.get(Calendar.DAY_OF_MONTH);
                     startDate.set(Calendar.DAY_OF_MONTH, 1);
@@ -303,9 +295,7 @@ public class MainController {
         List<String> selectedSalles = this.salles.getCheckModel().getCheckedItems();
         List<String> selectedPromotions = this.promotions.getCheckModel().getCheckedItems();
         List<String> selectedTypes = this.types.getCheckModel().getCheckedItems();
-
         List<Cours> coursesToDisplay = CoursFilter.filterCours(courses, selectedMatieres, selectedSalles, selectedPromotions, selectedTypes);
-
 
         for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
             List<Cours> coursesOnTargetDate = getCoursesOnTargetDate(coursesToDisplay, startDate.get(Calendar.DAY_OF_MONTH),
@@ -431,7 +421,6 @@ public class MainController {
             DateTime dtStart = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(startHour[0]), (startHour.length == 2) ? Integer.parseInt(startHour[1]) : 0);
             DateTime dtEnd = CreateEvent.createDateTime(datePicker.getValue().getYear(), datePicker.getValue().getMonth().getValue(), datePicker.getValue().getDayOfMonth(), Integer.parseInt(endHour[0]), (endHour.length == 2) ? Integer.parseInt(endHour[1]) : 0);
             VEvent newEvent = CreateEvent.createEvent(dtStart, dtEnd, "", description, "");
-            //todo use user ics to add this event
             CreateEvent.addEvent(schedulePath, newEvent);
             setIcs(schedulePath);
             drawSchedule(schedulePath);
