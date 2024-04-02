@@ -1,16 +1,1 @@
-[
-  {
-    "id": "1",
-    "name": "admin",
-    "password": "1234",
-    "isAdmin": true,
-    "darkTheme": false
-  },
-  {
-    "id": "2",
-    "name": "ange",
-    "password": "valorant",
-    "isAdmin": false,
-    "darkTheme": true
-  }
-]
+[{"password":"1234","name":"admin","darkTheme":false,"id":"1","isAdmin":true},{"password":"valorant","name":"ange","darkTheme":false,"id":"2","isAdmin":false}]

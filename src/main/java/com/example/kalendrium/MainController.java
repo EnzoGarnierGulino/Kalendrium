@@ -87,6 +87,12 @@ public class MainController {
             }
         }
 
+        // Handle darkTheme persistance
+        if (configManager.isDarkModeEnabled(id)) {
+            configManager.setDarkTheme(root);
+        }
+
+        // Handle comboCheckboxes
         matieres.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends String> c) -> {
             resetToMonday();
         });
@@ -491,7 +497,15 @@ public class MainController {
 
     // CTRL + T to switch theme
     private void switchTheme() {
-        configManager.switchTheme(root);
+        String id = null;
+        try (FileReader reader = new FileReader("db/currentUser.json")) {
+            JSONParser parser = new JSONParser();
+            JSONObject currentUserJson = (JSONObject) parser.parse(reader);
+            id = (String) currentUserJson.get("currentUserId");
+        } catch (IOException | org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
+        configManager.switchTheme(root, id);
     }
 
     private static List<List<List<Cours>>> getLists(List<Cours> coursByDate) {
