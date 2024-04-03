@@ -52,9 +52,13 @@
                     </FXCollections>
                 </items>
             </ComboBox>
+            <Label>Course</Label>
             <CheckComboBox fx:id="matieres" prefWidth="200"/>
+            <Label>Promotion</Label>
             <CheckComboBox fx:id="salles" prefWidth="200"/>
+            <Label>Rooms</Label>
             <CheckComboBox fx:id="promotions" prefWidth="200"/>
+            <Label>Type</Label>
             <CheckComboBox fx:id="types" prefWidth="200"/>
             <Button fx:id="addEventButton" text="Add event"/>
             <Button fx:id="bookButton" text="Book a room"/>
